@@ -7,7 +7,7 @@
         <div class="col-sm-6 text-right"><a href="/clients" class="btn btn-secondary"><< Back</a></div>
     </div>
 
-    {!! Form::open(['action' => 'ClientsController@store', 'method' => 'POST']) !!}
+    {!! Form::open(['action' => 'ClientsController@store', 'method' => 'POST', 'onFormSubmit' => 'altApp.validateCleintForm()']) !!}
         <div class="form-row">
             <div class="form-group col-md-6">
                 {{Form::label('name', 'Name')}}
@@ -37,15 +37,15 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 {{Form::label('telh', 'Telephone (Home)')}}
-                {{Form::text('telh', '', ['class' => 'form-control', 'placeholder' => 'Street, Suburb, Town'])}}
+                {{Form::text('telh', '', ['class' => 'form-control', 'placeholder' => 'e.g. (011)-(123)-(4567)'])}}
             </div>
             <div class="form-group col-md-4">
                 {{Form::label('telw', 'Telephone (Work)')}}
-                {{Form::text('telw', '', ['class' => 'form-control', 'placeholder' => 'Street, Suburb, Town'])}}
+                {{Form::text('telw', '', ['class' => 'form-control', 'placeholder' => 'e.g. (011)-(123)-(4567)'])}}
             </div>
             <div class="form-group col-md-4">
                 {{Form::label('cell', 'Cell')}}
-                {{Form::text('cell', '', ['class' => 'form-control', 'placeholder' => 'Street, Suburb, Town'])}}
+                {{Form::text('cell', '', ['class' => 'form-control', 'placeholder' => 'e.g. (072)-(123)-(4567)'])}}
             </div>
         </div>
         <div class="form-group">

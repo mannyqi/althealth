@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Client;
+use App\Supplier;
 use DB;
 
-class ClientsController extends Controller
+class SuppliersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,8 @@ class ClientsController extends Controller
      */
     public function index()
     {
-        $clients = Client::orderBy('C_name', 'asc')->paginate(10);
-        return view('clients.index')->with('clients', $clients);
+        $suppliers = Supplier::orderBy('Supplier_id', 'asc')->paginate(10);
+        return view('suppliers.index')->with('suppliers', $suppliers);
     }
 
     /**
@@ -26,7 +26,7 @@ class ClientsController extends Controller
      */
     public function create()
     {
-        return view('clients.create');
+        return view('suppliers.create');
     }
 
     /**
@@ -49,11 +49,11 @@ class ClientsController extends Controller
 //            'reference' => 'required'
         ]);
 
-        // Create Client
-        $client = new Client;
+        // Create Suppliers
+        $client = new Suppliers;
         $client->C_name         = $request->input('name');
         $client->C_surname      = $request->input('surname');
-        $client->Client_id      = $request->input('idnum');
+        $client->Suppliers_id      = $request->input('idnum');
         $client->Address        = $request->input('address');
         $client->Code           = $request->input('zip');
         $client->C_Email        = $request->input('email');
@@ -63,44 +63,40 @@ class ClientsController extends Controller
         $client->Reference_ID   = $request->input('reference');
         $client->save();
 
-        return redirect('/clients')->with('success', 'Client created successfully');
+        return redirect('/suppliers')->with('success', 'Suppliers created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $client = DB::select("select c.*, r.Description from tblclientinfo c
-                                inner join tblreference r on r.Reference_ID = c.Reference_ID
-                                where c.Client_id = ?", [$id]);
+        $supplier = DB::select("select * from tblsupplier_info where Supplier_id = ?", [$id]);
 
-        return view('clients.show')->with('client', (object) $client);
+        return view('suppliers.show')->with('supplier', (object) $supplier);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $client = DB::select("select c.*, r.Description from tblclientinfo c
-                                inner join tblreference r on r.Reference_ID = c.Reference_ID
-                                where c.Client_id = ?", [$id]);
+        $supplier = DB::select("select * from tblsupplier_info where Supplier_id = ?", [$id]);
 
-        return view('clients.edit')->with('client', (object) $client);
+        return view('suppliers.edit')->with('supplier', (object) $supplier);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -117,11 +113,11 @@ class ClientsController extends Controller
 //            'reference' => 'required'
         ]);
 
-        // Create Client
-        $client = Client::find($id);
+        // Create Suppliers
+        $client = Supplier::find($id);
         $client->C_name         = $request->input('name');
         $client->C_surname      = $request->input('surname');
-        $client->Client_id      = $request->input('idnum');
+        $client->Suppliers_id      = $request->input('idnum');
         $client->Address        = $request->input('address');
         $client->Code           = $request->input('zip');
         $client->C_Email        = $request->input('email');
@@ -131,20 +127,20 @@ class ClientsController extends Controller
         $client->Reference_ID   = $request->input('reference');
         $client->save();
 
-        return redirect('/clients')->with('success', "Client '$id' updated successfully");
+        return redirect('/suppliers')->with('success', "Suppliers '$id' updated successfully");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $client = Client::find($id);
+        $client = Supplier::find($id);
         $client->delete();
 
-        return redirect('/clients')->with('success', "Client '$id' was removed");
+        return redirect('/suppliers')->with('success', "Suppliers '$id' was removed");
     }
 }

@@ -7,8 +7,6 @@
 
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
 
-    <script type="text/javascript" src="{{asset('js/app.js')}}"></script>
-
     <title>{{config('app.name', 'AltHealth')}}</title>
 </head>
 <body>
@@ -21,5 +19,6 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="{{asset('js/app.js')}}"></script>
 </body>
 </html>

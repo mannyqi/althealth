@@ -5,17 +5,17 @@
     <a href="/clients" class="btn btn-secondary"><< Back</a>
     @foreach($client as $c)
         <h1>{{$c->C_name}} {{$c->C_surname}}</h1>
-        <p>ID Number: {{$c->Client_id}}</p>
+        <p><strong>ID Number:</strong> {{$c->Client_id}}</p>
         <p>
-            Address: {{$c->Address}}, {{$c->Code}}
+            <strong>Address:</strong> {{$c->Address}}, {{$c->Code}}
         </p>
-        <p>Reference: {{$c->Description}}</p>
+        <p><strong>Reference:</strong> {{$c->Description}}</p>
         <h3>Contact Details:</h3>
         <p>
-            Email: {{$c->C_Email}}<br>
-            Cell: {{$c->C_Tel_Cell}}<br>
-            Home: {{$c->C_Tel_H}}<br>
-            Work: {{$c->C_Tel_W}}
+            <strong>Email:</strong> {{$c->C_Email}}<br>
+            <strong>Cell:</strong> {{$c->C_Tel_Cell}}<br>
+            <strong>Home:</strong> {{$c->C_Tel_H}}<br>
+            <strong>Work:</strong> {{$c->C_Tel_W}}
         </p>
     @endforeach
 

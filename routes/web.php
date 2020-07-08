@@ -19,4 +19,6 @@ Route::get('/', 'WelcomeController@index');
  * Automatically create routes based on controller generated using the 'php artisan make:controller SomeController --resource'
  */
 Route::resource('clients', 'ClientsController');
+Route::resource('suppliers', 'SuppliersController');
+Route::resource('supplements', 'SupplementsController');
 

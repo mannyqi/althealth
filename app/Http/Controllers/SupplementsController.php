@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Client;
+use App\Supplement;
 use DB;
 
-class ClientsController extends Controller
+class SupplementsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,9 @@ class ClientsController extends Controller
      */
     public function index()
     {
-        $clients = Client::orderBy('C_name', 'asc')->paginate(10);
-        return view('clients.index')->with('clients', $clients);
+        $supplements = Supplement::orderBy('Supplement_Description', 'asc')->paginate(10);
+
+        return view('supplements.index')->with('supplements', $supplements);
     }
 
     /**
@@ -26,7 +27,7 @@ class ClientsController extends Controller
      */
     public function create()
     {
-        return view('clients.create');
+        return view('supplements.create');
     }
 
     /**
@@ -49,11 +50,11 @@ class ClientsController extends Controller
 //            'reference' => 'required'
         ]);
 
-        // Create Client
-        $client = new Client;
+        // Create Supplements
+        $client = new Supplements;
         $client->C_name         = $request->input('name');
         $client->C_surname      = $request->input('surname');
-        $client->Client_id      = $request->input('idnum');
+        $client->Supplements_id      = $request->input('idnum');
         $client->Address        = $request->input('address');
         $client->Code           = $request->input('zip');
         $client->C_Email        = $request->input('email');
@@ -63,44 +64,40 @@ class ClientsController extends Controller
         $client->Reference_ID   = $request->input('reference');
         $client->save();
 
-        return redirect('/clients')->with('success', 'Client created successfully');
+        return redirect('/supplements')->with('success', 'Supplements created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $client = DB::select("select c.*, r.Description from tblclientinfo c
-                                inner join tblreference r on r.Reference_ID = c.Reference_ID
-                                where c.Client_id = ?", [$id]);
+        $supplement = DB::select("select * from tblsupplements where Supplement_id = ?", [$id]);
 
-        return view('clients.show')->with('client', (object) $client);
+        return view('supplements.show')->with('supplement', (object) $supplement);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $client = DB::select("select c.*, r.Description from tblclientinfo c
-                                inner join tblreference r on r.Reference_ID = c.Reference_ID
-                                where c.Client_id = ?", [$id]);
+        $supplement = DB::select("select * from tblsupplements where Supplement_id = ?", [$id]);
 
-        return view('clients.edit')->with('client', (object) $client);
+        return view('supplements.edit')->with('supplement', (object) $supplement);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -117,11 +114,11 @@ class ClientsController extends Controller
 //            'reference' => 'required'
         ]);
 
-        // Create Client
-        $client = Client::find($id);
+        // Create Supplements
+        $client = Supplement::find($id);
         $client->C_name         = $request->input('name');
         $client->C_surname      = $request->input('surname');
-        $client->Client_id      = $request->input('idnum');
+        $client->Supplements_id      = $request->input('idnum');
         $client->Address        = $request->input('address');
         $client->Code           = $request->input('zip');
         $client->C_Email        = $request->input('email');
@@ -131,20 +128,20 @@ class ClientsController extends Controller
         $client->Reference_ID   = $request->input('reference');
         $client->save();
 
-        return redirect('/clients')->with('success', "Client '$id' updated successfully");
+        return redirect('/supplements')->with('success', "Supplements '$id' updated successfully");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $client = Client::find($id);
+        $client = Supplement::find($id);
         $client->delete();
 
-        return redirect('/clients')->with('success', "Client '$id' was removed");
+        return redirect('/supplements')->with('success', "Supplements '$id' was removed");
     }
 }
