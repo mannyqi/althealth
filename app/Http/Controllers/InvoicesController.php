@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Supplier;
+use App\Invoice;
 use DB;
 
-class SuppliersController extends Controller
+class InvoicesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +16,16 @@ class SuppliersController extends Controller
     public function index()
     {
         // Production
-        $suppliers = Supplier::orderBy('Supplier_id', 'asc')->paginate(10);
+        $invoices = Invoice::orderBy('Inv_Num', 'desc')->paginate(10);
 
-        // Staging
-//        $suppliers = DB::select("select * from tblsupplier_info order by Supplier_id asc limit 10 offset 0");
+        // Production
+        $invoices = DB::select("select inv.*, cl.C_name, cl.C_surname
+                                from tblinv_info inv
+                                inner join tblclientinfo cl
+                                on cl.Client_id = inv.Client_id
+                                order by inv.Inv_Num desc limit 10 offset 0");
 
-        return view('suppliers.index')->with('suppliers', $suppliers);
+        return view('invoices.index')->with('invoices', $invoices);
     }
 
     /**
@@ -31,7 +35,7 @@ class SuppliersController extends Controller
      */
     public function create()
     {
-        return view('suppliers.create');
+        return view('invoices.create');
     }
 
     /**
@@ -54,11 +58,11 @@ class SuppliersController extends Controller
 //            'reference' => 'required'
         ]);
 
-        // Create Suppliers
-        $client = new Suppliers;
+        // Create Invoices
+        $client = new Invoices;
         $client->C_name         = $request->input('name');
         $client->C_surname      = $request->input('surname');
-        $client->Suppliers_id      = $request->input('idnum');
+        $client->Invoices_id      = $request->input('idnum');
         $client->Address        = $request->input('address');
         $client->Code           = $request->input('zip');
         $client->C_Email        = $request->input('email');
@@ -68,7 +72,7 @@ class SuppliersController extends Controller
         $client->Reference_ID   = $request->input('reference');
         $client->save();
 
-        return redirect('/suppliers')->with('success', 'Suppliers created successfully');
+        return redirect('/invoices')->with('success', 'Invoices created successfully');
     }
 
     /**
@@ -79,9 +83,20 @@ class SuppliersController extends Controller
      */
     public function show($id)
     {
-        $supplier = DB::select("select * from tblsupplier_info where Supplier_id = ?", [$id]);
+        $invoice = DB::select("select inv.*, invi.Item_Price, invi.Item_Quantity, invi.Supplement_id, sup.Supplement_Description,
+                                cl.C_name, cl.C_surname, cl.Address, cl.Code, cl.C_Email, cl.C_Tel_W, cl.C_Tel_H, cl.C_Tel_Cell
+                                from tblinv_info inv
+                                inner join tblinv_items invi
+                                on invi.Inv_Num = inv.Inv_Num
+                                inner join tblsupplements sup
+                                on sup.Supplement_id = invi.Supplement_id
+                                inner join tblclientinfo cl
+                                on cl.Client_id = inv.Client_id
+                                where inv.Inv_Num = ?", [$id]);
 
-        return view('suppliers.show')->with('supplier', (object) $supplier);
+//        dd($invoice);
+
+        return view('invoices.show')->with('invoice', $invoice);
     }
 
     /**
@@ -92,9 +107,9 @@ class SuppliersController extends Controller
      */
     public function edit($id)
     {
-        $supplier = DB::select("select * from tblsupplier_info where Supplier_id = ?", [$id]);
+        $invoice = DB::select("select * from tblinvoices where Invoice_id = ?", [$id]);
 
-        return view('suppliers.edit')->with('supplier', (object) $supplier);
+        return view('invoices.edit')->with('invoice', (object) $invoice);
     }
 
     /**
@@ -118,11 +133,11 @@ class SuppliersController extends Controller
 //            'reference' => 'required'
         ]);
 
-        // Create Suppliers
-        $client = Supplier::find($id);
+        // Create Invoices
+        $client = Invoice::find($id);
         $client->C_name         = $request->input('name');
         $client->C_surname      = $request->input('surname');
-        $client->Suppliers_id      = $request->input('idnum');
+        $client->Invoices_id      = $request->input('idnum');
         $client->Address        = $request->input('address');
         $client->Code           = $request->input('zip');
         $client->C_Email        = $request->input('email');
@@ -132,7 +147,7 @@ class SuppliersController extends Controller
         $client->Reference_ID   = $request->input('reference');
         $client->save();
 
-        return redirect('/suppliers')->with('success', "Suppliers '$id' updated successfully");
+        return redirect('/invoices')->with('success', "Invoices '$id' updated successfully");
     }
 
     /**
@@ -143,9 +158,9 @@ class SuppliersController extends Controller
      */
     public function destroy($id)
     {
-        $client = Supplier::find($id);
+        $client = Invoice::find($id);
         $client->delete();
 
-        return redirect('/suppliers')->with('success', "Suppliers '$id' was removed");
+        return redirect('/invoices')->with('success', "Invoices '$id' was removed");
     }
 }

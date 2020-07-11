@@ -15,7 +15,11 @@ class SupplementsController extends Controller
      */
     public function index()
     {
+        // Production
         $supplements = Supplement::orderBy('Supplement_Description', 'asc')->paginate(10);
+
+        // Staging
+//        $supplements = DB::select("select * from tblsupplements order by Supplement_Description asc limit 10 offset 0");
 
         return view('supplements.index')->with('supplements', $supplements);
     }

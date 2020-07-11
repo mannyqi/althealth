@@ -15,7 +15,12 @@ class ClientsController extends Controller
      */
     public function index()
     {
+        // Production
         $clients = Client::orderBy('C_name', 'asc')->paginate(10);
+
+        // Staging
+//        $clients = DB::select("select * from tblclientinfo order by C_name asc limit 10 offset 0");
+
         return view('clients.index')->with('clients', $clients);
     }
 

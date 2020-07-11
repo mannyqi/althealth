@@ -18,6 +18,26 @@
             <li class="nav-item">
                 <a class="nav-link" href="/supplements">Supplements</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/invoices">Invoices</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cart">Cart</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Reports
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/reports/d2d-1">Unpaid Invoices</a>
+                    <a class="dropdown-item" href="/reports/d2d-2">Client Birthdays</a>
+                    <a class="dropdown-item" href="/reports/d2d-3">Insufficient Stock</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/reports/mis-1">Top 10 Clients</a>
+                    <a class="dropdown-item" href="/reports/mis-2">Monthly Sales</a>
+                    <a class="dropdown-item" href="/reports/mis-3">Client Contact</a>
+                </div>
+            </li>
         </ul>
     </div>
 </nav>

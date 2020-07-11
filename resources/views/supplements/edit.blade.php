@@ -24,13 +24,13 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 {{Form::label('costexcl', 'Cost Excl.')}}
                 {{Form::text('costexcl', $s->Cost_excl, ['class' => 'form-control'])}}
             </div>
-            <div class="form-group col-md-3">
-                {{Form::label('costincl', 'Cost Incl.')}}
-                {{Form::text('costincl', $s->Cost_incl, ['class' => 'form-control'])}}
+            <div class="form-group col-md-2">
+                {{Form::label('rate', 'VAT Rate (%)')}}
+                {{Form::text('rate', '', ['class' => 'form-control', 'placeholder' => 'eg. 15'])}}
             </div>
             <div class="form-group col-md-3">
                 {{Form::label('qty', 'Stock Qty')}}
