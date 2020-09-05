@@ -17,3 +17,6 @@
         {{session('error')}}
     </div>
 @endif
+
+<div id="error-messages" class="alert alert-danger" style="display: none">
+</div>

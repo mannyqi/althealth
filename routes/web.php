@@ -19,9 +19,13 @@ Route::get('/', 'WelcomeController@index');
  * Automatically create routes based on controller generated using the 'php artisan make:controller SomeController --resource'
  */
 Route::resource('clients', 'ClientsController');
+Route::get('/clients/json/{id}', 'ClientsController@getClient');
+
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('supplements', 'SupplementsController');
+
 Route::resource('invoices', 'InvoicesController');
+Route::post('/invoices/create-draft', 'InvoicesController@createDraft');
 
 Route::get('/reports', 'ReportsController@index');
 Route::get('/reports/d2d-1', 'ReportsController@index');

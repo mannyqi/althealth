@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             {{Form::label('tel', 'Telephone')}}
-            {{Form::text('tel', '', ['class' => 'form-control', 'placeholder' => 'e.g. (123)-(456)-(7890)'])}}
+            {{Form::text('tel', '', ['class' => 'form-control', 'placeholder' => 'e.g. (123)-(456)-(7890)', 'maxlength' => '18'])}}
         </div>
         <div class="form-group">
             {{Form::label('email', 'Email')}}
@@ -47,7 +47,7 @@
                 {{Form::select('account_type', ['' => 'Please select', 'Cheque' => 'Cheque', 'Credit' => 'Credit', 'Savings' => 'Savings'], '', ['class' => 'form-control'])}}
             </div>
         </div>
-        {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}
+        {{Form::submit('Submit', ['class' => 'btn btn-primary suppliers-form-btn'])}}
     {!! Form::close() !!}
 
 @endsection

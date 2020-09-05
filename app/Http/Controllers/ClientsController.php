@@ -31,7 +31,9 @@ class ClientsController extends Controller
      */
     public function create()
     {
-        return view('clients.create');
+        $references = DB::select("select * from tblreference");
+
+        return view('clients.create')->with('references', $references);
     }
 
     /**
@@ -94,11 +96,16 @@ class ClientsController extends Controller
      */
     public function edit($id)
     {
-        $client = DB::select("select c.*, r.Description from tblclientinfo c
-                                inner join tblreference r on r.Reference_ID = c.Reference_ID
-                                where c.Client_id = ?", [$id]);
+        $client = DB::select("select * from tblclientinfo where Client_id = ?", [$id]);
 
-        return view('clients.edit')->with('client', (object) $client);
+        $references = DB::select("select * from tblreference");
+
+        $data = [
+            'client' => $client,
+            'references' => $references
+        ];
+
+        return view('clients.edit')->with($data);
     }
 
     /**
@@ -151,5 +158,12 @@ class ClientsController extends Controller
         $client->delete();
 
         return redirect('/clients')->with('success', "Client '$id' was removed");
+    }
+
+    public function getClient($id)
+    {
+        $client = Client::find($id);
+
+        return $client->toJson(JSON_PRETTY_PRINT);
     }
 }

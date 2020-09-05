@@ -50,8 +50,14 @@
             </div>
         </div>
         <div class="form-group">
+            <?php
+            $ref = ['' => 'Please select'];
+            foreach ($references as $reference) {
+                $ref[$reference->Reference_ID] = $reference->Description;
+            }
+            ?>
             {{Form::label('reference', 'Reference')}}
-            {{Form::select('reference', ['' => 'Please select', '1' => 'Website', '2' => 'Word by mouth'], $c->Reference_ID, ['class' => 'form-control'])}}
+            {{Form::select('reference', $ref, $c->Reference_ID, ['class' => 'form-control'])}}
         </div>
         {{Form::hidden('_method', 'PUT')}}
         {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+//use http\Client;
 use Illuminate\Http\Request;
 use App\Invoice;
+use App\Client;
 use DB;
 
 class InvoicesController extends Controller
@@ -35,7 +37,20 @@ class InvoicesController extends Controller
      */
     public function create()
     {
-        return view('invoices.create');
+        $clients = DB::select("select * from tblclientinfo order by C_name, C_surname");
+
+        $supplements = DB::select("select * from tblsupplements order by Supplement_id");
+
+        $data = [
+            'clients' => $clients,
+            'supplements' => $supplements
+        ];
+
+        return view('invoices.create')->with($data);
+    }
+
+    private function _getNewInvNumber() {
+
     }
 
     /**
@@ -162,5 +177,44 @@ class InvoicesController extends Controller
         $client->delete();
 
         return redirect('/invoices')->with('success', "Invoices '$id' was removed");
+    }
+
+    /**
+     * Create a draft invoice with new invoice id and client details
+     * @param Request $request
+     */
+    public function createDraft(Request $request)
+    {
+        $invoice = new \stdClass();
+        $invoice->invoice_id = $this->_generateInvoiceNum();
+        $invoice->client = Client::find($request->input('client_id'));
+        $invoice->items = [];
+
+        $request->session()->put('invoice', $invoice);
+    }
+
+    /**
+     * Generate a new invoice number
+     * @return string
+     */
+    private function _generateInvoiceNum()
+    {
+        $invoice = Invoice::orderBy('Inv_Num', 'desc')->first();
+        $inv_num = str_replace('INV', '', $invoice);
+        $new_inv_num = (int) $inv_num + 1;
+
+        if (strlen($inv_num) > strlen($new_inv_num)) {
+
+            // put back leading zeros
+            $diff = strlen($inv_num) - strlen($new_inv_num);
+            for ($i = 1; $i <= $diff; $i++) {
+                $new_inv_num = '0' . $new_inv_num;
+            }
+            $new_inv_num = 'INV' . $new_inv_num;
+        } else {
+            $new_inv_num = 'INV' . $new_inv_num;
+        }
+
+        return $new_inv_num;
     }
 }

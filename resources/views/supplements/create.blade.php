@@ -14,8 +14,14 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
+                <?php
+                $sup = ['' => 'Please select'];
+                foreach ($suppliers as $supplier) {
+                    $sup[$supplier->Supplier_id] = $supplier->Supplier_id;
+                }
+                ?>
                 {{Form::label('supplier', 'Supplier')}}
-                {{Form::select('account_type', ['' => 'Please select', 'Cheque' => 'Cheque', 'Credit' => 'Credit', 'Savings' => 'Savings'], '', ['class' => 'form-control'])}}
+                {{Form::select('supplier', $sup, '', ['class' => 'form-control'])}}
             </div>
             <div class="form-group col-md-6">
                 {{Form::label('nappi', 'Nappi Code')}}
@@ -23,24 +29,28 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-sm-3">
                 {{Form::label('costexcl', 'Cost Excl.')}}
                 {{Form::text('costexcl', '', ['class' => 'form-control'])}}
             </div>
-            <div class="form-group col-md-2">
+            <div class="form-group col-sm-2">
                 {{Form::label('rate', 'VAT Rate (%)')}}
                 {{Form::text('rate', '', ['class' => 'form-control', 'placeholder' => 'eg. 15'])}}
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-sm-3">
+                {{Form::label('costincl', 'Cost Incl.')}}
+                {{Form::text('costincl', '0.00', ['class' => 'form-control', 'disabled'])}}
+            </div>
+            <div class="form-group col-sm-2">
                 {{Form::label('qty', 'Stock Qty')}}
                 {{Form::text('qty', '', ['class' => 'form-control'])}}
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-sm-2">
                 {{Form::label('minlvl', 'Min Level')}}
                 {{Form::text('minlvl', '', ['class' => 'form-control'])}}
             </div>
         </div>
-        {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}
+        {{Form::submit('Submit', ['class' => 'btn btn-primary supplement-form-btn'])}}
     {!! Form::close() !!}
 
 @endsection

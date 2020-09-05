@@ -31,7 +31,9 @@ class SupplementsController extends Controller
      */
     public function create()
     {
-        return view('supplements.create');
+        $suppliers = DB::select("select * from tblsupplier_info order by Supplier_id");
+
+        return view('supplements.create')->with('suppliers', $suppliers);
     }
 
     /**
@@ -94,7 +96,14 @@ class SupplementsController extends Controller
     {
         $supplement = DB::select("select * from tblsupplements where Supplement_id = ?", [$id]);
 
-        return view('supplements.edit')->with('supplement', (object) $supplement);
+        $suppliers = DB::select("select * from tblsupplier_info order by Supplier_id");
+
+        $data = [
+            'supplement' => $supplement,
+            'suppliers' => $suppliers
+        ];
+
+        return view('supplements.edit')->with($data);
     }
 
     /**

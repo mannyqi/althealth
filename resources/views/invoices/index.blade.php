@@ -3,6 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-6"><h1>Invoices</h1></div>
+        <div class="col-sm-6 text-right"><a href="/invoices/create" class="btn btn-success">Create New Invoice</a></div>
     </div>
 
     @if(count($invoices) > 0)
