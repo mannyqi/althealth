@@ -122,7 +122,7 @@ class InvoicesController extends Controller
      */
     public function edit($id)
     {
-        $invoice = DB::select("select * from tblinvoices where Invoice_id = ?", [$id]);
+        $invoice = DB::select("select * from tblinv_info where Invoice_id = ?", [$id]);
 
         return view('invoices.edit')->with('invoice', (object) $invoice);
     }
@@ -185,12 +185,40 @@ class InvoicesController extends Controller
      */
     public function createDraft(Request $request)
     {
-        $invoice = new \stdClass();
-        $invoice->invoice_id = $this->_generateInvoiceNum();
-        $invoice->client = Client::find($request->input('client_id'));
-        $invoice->items = [];
+        $invoice = array();
+        $invoice['invoice_id'] = $this->_generateInvoiceNum();
+        $invoice['client'] = Client::find($request->input('client_id'));
+        $invoice['items'] = [];
 
         $request->session()->put('invoice', $invoice);
+    }
+
+    /**
+     * Save draft invoice line items to existing session
+     * @param Request $request
+     */
+    public function saveDraft(Request $request)
+    {
+        $items = json_decode($request->input('items'));
+
+        try {
+            $request->session()->put('invoice.items', $items);
+
+            return 'success';
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Discard draft invoice
+     * @param Request $request
+     */
+    public function discardDraft(Request $request)
+    {
+        $request->session()->flush();
+
+        return redirect('/invoices')->with('success', "Draft invoice discarded successfully!");
     }
 
     /**

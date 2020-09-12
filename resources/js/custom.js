@@ -1,6 +1,8 @@
 $(function () {
     var altApp = {
-        error: []
+        error: [],
+        tax_rate: 15,
+        items: []
     };
 
     // ----------------------------------------------------------------------------
@@ -162,7 +164,6 @@ $(function () {
                 '_token': $('input[name="_token"]').val()
             },
             function (data, status) {
-                console.log(status);
                 if (status != 'success') {
                     altApp.error.push('Problem creating draft invoice. Please try again later.');
                     altApp.showError();
@@ -173,14 +174,150 @@ $(function () {
         );
     };
 
-    altApp.addInvoiceLineItem = function () {
-        var line_item = $('.invoice-lineitem-template').contents();
+    altApp.addInvoiceLineItem = function (e) {
+        var line_item = $('#invoice-lineitem-template').html();
         $('.invoice-line-items tbody').append(line_item);
+
+        altApp.afterAddInvoiceLineItem(e);
+    };
+
+    altApp.deleteInvoiceLineItem = function(e) {
+        $(e.target).parents('tr').remove();
+        altApp.calcLineitemTotal(e);
+    };
+
+    altApp.afterAddInvoiceLineItem = function(e) {
+        $(".line-item-delete").off('click').click(altApp.deleteInvoiceLineItem);
+        $(".invoice-lineitem-supplement").off('change').on("change", altApp.calcLineitemTotal);
+        $(".line-item-qty").off('keyup').on("keyup", altApp.calcLineitemTotal);
+    };
+
+    altApp.calcLineitemTotal = function(e) {
+        var item_row = $(e.target).parents('tr');
+        var supplement = item_row.find('select.invoice-lineitem-supplement');
+        var cost_excl = supplement.children("option:selected").attr('data-cost');
+        var supplement_desc = supplement.children("option:selected").attr('data-title');
+
+        var qty = item_row.find('.line-item-qty').val();
+        if (isNaN(qty)) {
+            // highlight qty field should qty NOT be a number
+            item_row.find('.line-item-qty').addClass('border-danger');
+            qty = 0;
+        } else {
+            item_row.find('.line-item-qty').removeClass('border-danger');
+        }
+
+        var subtotal_excl = parseFloat(cost_excl) * parseInt(qty);
+        var subtotal_incl = altApp.calcCostIncl(subtotal_excl);
+
+        item_row.find('.item-description').html(supplement_desc);
+        item_row.find('input[name="cost-excl"]').val(altApp.formatPrice(cost_excl));
+        item_row.find('input[name="cost-excl-sum"]').val(altApp.formatPrice(subtotal_excl));
+        item_row.find('.item-subtotal').html(altApp.formatPrice(subtotal_incl));
+
+        // Populate invoice total
+        altApp.calcInvoiceTotal();
+
+        altApp.saveLineItems();
+    };
+
+    /**
+     * Calculate invoice subtotals
+     */
+    altApp.calcInvoiceTotal = function() {
+        var subtotal = 0;
+        var totals = [];
+        $('.invoice-line-items tr td .item-subtotal').each(function () {
+            var str_total = $(this).text();
+            subtotal += parseFloat(str_total.replace('R ', ''));
+        });
+
+        var total_excl = altApp.formatPrice(parseFloat(subtotal));
+        var total_incl = altApp.formatPrice(altApp.calcCostIncl(parseFloat(subtotal)));
+
+        $('#invoice-total-excl').html(total_excl);
+        $('#invoice-total-incl').html(total_incl);
+    };
+
+    /**
+     * Populate invoice line item prices and calculate all totals
+     */
+    altApp.populateInvoiceItems = function() {
+        var subtotal = 0;
+        var totals = [];
+        $('.invoice-line-items tr').each(function () {
+            var item_row = $(this);
+            var supplement = item_row.find('select.invoice-lineitem-supplement');
+            var cost_excl = supplement.children("option:selected").attr('data-cost');
+            var supplement_desc = supplement.children("option:selected").attr('data-title');
+            var qty = item_row.find('.line-item-qty').val();
+            var subtotal_excl = parseFloat(cost_excl) * parseInt(qty);
+            var subtotal_incl = altApp.calcCostIncl(subtotal_excl);
+
+            item_row.find('.item-description').html(supplement_desc);
+            item_row.find('input[name="cost-excl"]').val(altApp.formatPrice(cost_excl));
+            item_row.find('input[name="cost-excl-sum"]').val(altApp.formatPrice(subtotal_excl));
+            item_row.find('.item-subtotal').html(altApp.formatPrice(subtotal_incl));
+
+            // Populate invoice total
+            altApp.calcInvoiceTotal();
+        });
+    };
+
+    altApp.saveLineItems = function() {
+        // build json object with line item data
+        // check for supplement id before adding line item to object
+        // save json line item data to session
+        var i = 0;
+        $('.invoice-line-items tbody tr').each(function () {
+            var line_item = $(this);
+            var suppl = line_item.find('select.invoice-lineitem-supplement').children("option:selected");
+            if (suppl.val()) {
+                altApp.items[i] = {};
+                altApp.items[i].supplement_id = suppl.val();
+                altApp.items[i].cost_excl = suppl.attr('data-cost');
+                altApp.items[i].qty = line_item.find('.line-item-qty').val();
+
+                i++;
+            }
+        });
+
+        if (altApp.items.length > 0) {
+            // save to session
+            $.post('/invoices/save-draft',
+                {
+                    'items': JSON.stringify(altApp.items),
+                    '_token': $('input[name="_token"]').val()
+                },
+                function (data, status) {
+                    console.log('data',data, status);
+                    if (status != 'success') {
+                        altApp.error.push('There was a problem saving your draft invoice. Please try again later.');
+                        altApp.showError();
+                    } else {
+                        //location.reload();
+                    }
+                }
+            );
+        }
     };
 
     // ----------------------------------------------------------------------------
     // GLOBAL
     // ----------------------------------------------------------------------------
+    altApp.calcCostIncl = function(cost_excl) {
+        return parseFloat(cost_excl) * (altApp.tax_rate / 100 + 1)
+    };
+
+    altApp.formatPrice = function(price) {
+        if (isNaN(price)) {
+            return 'NaN';
+        } else {
+            var price_formatted = parseFloat(price).toFixed(2);
+            return 'R ' + price_formatted;
+        }
+    };
+
     altApp.validateEmail = function (email) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
             return true;
@@ -255,6 +392,8 @@ $(function () {
     // Invoices
     $("#invoice-clients").on("change", altApp.getClientInfo);
     $("#invoice-client-confirm").click(altApp.createDraftInvoice);
+    altApp.afterAddInvoiceLineItem();
+    altApp.populateInvoiceItems();
     // append new line item
     $("#create-invoice-lineitem").click(altApp.addInvoiceLineItem);
     //

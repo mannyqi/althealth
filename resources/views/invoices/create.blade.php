@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-6"><h1>Create Invoice</h1></div>
         @if(Session::get('invoice'))
-            <div class="col-sm-6 text-right"><a href="/invoices/discardDraft" class="btn btn-danger">Discard Draft Invoice</a></div>
+            <div class="col-sm-6 text-right"><a href="/invoices/discard-draft" class="btn btn-danger">Discard Draft Invoice</a></div>
         @else
             <div class="col-sm-6 text-right"><a href="/invoices" class="btn btn-secondary"><< Back</a></div>
         @endif
@@ -43,20 +43,20 @@
                 </div>
                 <div class="col-6">
                     <h2>TO</h2>
-                    <h4>{{$invoice->client->C_name}} {{$invoice->client->C_surname}}</h4>
+                    <h4>{{$invoice['client']->C_name}} {{$invoice['client']->C_surname}}</h4>
                     <p>
-                        <strong>Address:</strong> {{$invoice->client->Address}}, {{$invoice->client->Code}}<br />
-                        <strong>Email:</strong> {{$invoice->client->C_Email}}<br />
-                        <strong>Phone:</strong> {{$invoice->client->C_Tel_W}}
+                        <strong>Address:</strong> {{$invoice['client']->Address}}, {{$invoice['client']->Code}}<br />
+                        <strong>Email:</strong> {{$invoice['client']->C_Email}}<br />
+                        <strong>Phone:</strong> {{$invoice['client']->C_Tel_W}}
                     </p>
                 </div>
             </div>
             <hr />
 
-            <div class="invoice-lineitem-template" style="display: none;">
+            <template id="invoice-lineitem-template">
                 <tr>
                     <td>
-                        <select name="supplement_id" class="form-control-sm">
+                        <select name="supplement_id" class="form-control-sm invoice-lineitem-supplement">
                             <option value="">Select</option>
                             @foreach($supplements as $supplement)
                                 <option value="{{$supplement->Supplement_id}}" data-title="{{$supplement->Supplement_Description}}" data-cost="{{$supplement->Cost_excl}}">{{$supplement->Supplement_id}}</option>
@@ -64,11 +64,13 @@
                         </select>
                     </td>
                     <td class="item-description">n/a</td>
-                    <td><input type="input" class="form-control-sm"></td>
-                    <td><input type="input" disabled name="cost-excl-sum" class="form-control-sm"></td>
-                    <td class="item-cost-sum">0.00</td>
+                    <td><input type="input" value="0.00" disabled name="cost-excl-sum" class="form-control-sm"></td>
+                    <td><input type="input" value="1" class="form-control-sm line-item-qty"></td>
+                    <td><input type="input" value="0.00" disabled name="cost-excl-sum" class="form-control-sm"></td>
+                    <td><strong class="item-subtotal">0.00</strong></td>
+                    <td><a href="javascript:;" class="btn btn-sm btn-danger line-item-delete">X</a></td>
                 </tr>
-            </div>
+            </template>
             <table class="table table-light table-striped invoice-line-items">
                 <thead>
                 <tr>
@@ -81,21 +83,25 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <select name="supplement_id" class="form-control-sm">
-                                <option value="">Select</option>
-                                @foreach($supplements as $supplement)
-                                    <option value="{{$supplement->Supplement_id}}" data-title="{{$supplement->Supplement_Description}}" data-cost="{{$supplement->Cost_excl}}">{{$supplement->Supplement_id}}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td class="item-description">n/a</td>
-                        <td><input type="input" disabled name="cost-excl" class="form-control-sm"></td>
-                        <td><input type="input" class="form-control-sm"></td>
-                        <td><input type="input" disabled name="cost-excl-sum" class="form-control-sm"></td>
-                        <td class="item-cost-sum">0.00</td>
-                    </tr>
+                    <?php foreach ($invoice['items'] as $item) { ?>
+                        <tr>
+                            <td>
+
+                                <select name="supplement_id" class="form-control-sm invoice-lineitem-supplement">
+                                    <option value="">Select</option>
+                                    @foreach($supplements as $supplement)
+                                        <option value="{{$supplement->Supplement_id}}" data-title="{{$supplement->Supplement_Description}}" data-cost="{{$supplement->Cost_excl}}" <?php if ($supplement->Supplement_id == $item->supplement_id) {?>selected<?php } ?>>{{$supplement->Supplement_id}}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td class="item-description">n/a</td>
+                            <td><input type="input" value="0.00" disabled name="cost-excl" class="form-control-sm"></td>
+                            <td><input type="input" value="{{$item->qty}}" class="form-control-sm line-item-qty"></td>
+                            <td><input type="input" value="0.00" disabled name="cost-excl-sum" class="form-control-sm"></td>
+                            <td><strong class="item-subtotal">0.00</strong></td>
+                            <td><a href="javascript:;" class="btn btn-sm btn-danger line-item-delete">X</a></td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -103,16 +109,20 @@
                     </tr>
                     <tr>
                         <td colspan="5" class="text-right"><h5>Total (Excl.):</h5></td>
-                        <td><strong>R {{number_format(0, 2, '.', ' ')}}</strong></td>
+                        <td><strong id="invoice-total-excl">R {{number_format(0, 2, '.', ' ')}}</strong></td>
                     </tr>
                     <tr>
                         <?php $tax = 0; ?>
                         <td colspan="5" class="text-right"><h5>Total (Incl.):</h5></td>
-                        <td><strong>R {{number_format($tax, 2, '.', ' ')}}</strong></td>
+                        <td><strong id="invoice-total-incl">R {{number_format($tax, 2, '.', ' ')}}</strong></td>
                     </tr>
                 </tfoot>
             </table>
         {!! Form::close() !!}
+
+        <div class="row">
+            <div class="col text-right"><a href="/invoices/issue" class="btn btn-info float-right" title="Create and email invoice to client">Issue Invoice</a></div>
+        </div>
     @else
         {!! Form::open(['action' => 'InvoicesController@store', 'method' => 'POST']) !!}
             <div class="form-row">

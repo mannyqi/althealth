@@ -24,8 +24,10 @@ Route::get('/clients/json/{id}', 'ClientsController@getClient');
 Route::resource('suppliers', 'SuppliersController');
 Route::resource('supplements', 'SupplementsController');
 
-Route::resource('invoices', 'InvoicesController');
 Route::post('/invoices/create-draft', 'InvoicesController@createDraft');
+Route::post('/invoices/save-draft', 'InvoicesController@saveDraft');
+Route::get('/invoices/discard-draft', 'InvoicesController@discardDraft');
+Route::resource('invoices', 'InvoicesController');
 
 Route::get('/reports', 'ReportsController@index');
 Route::get('/reports/d2d-1', 'ReportsController@index');
