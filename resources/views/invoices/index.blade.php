@@ -25,9 +25,9 @@
                     <td>{{$invoice->Inv_Date}}</td>
                     <td>{{$invoice->Inv_Paid_Date}}</td>
                     <td class="text-right">
-                        <a href="/invoices/{{$invoice->Inv_Num}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;
+{{--                        <a href="/invoices/{{$invoice->Inv_Num}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;--}}
 
-                        {!! Form::open(['action' => ['InvoicesController@destroy', $invoice->Inv_Num], 'method' => 'POST', 'class' => 'float-right']) !!}
+                        {!! Form::open(['action' => ['InvoicesController@destroy', $invoice->Inv_Num], 'method' => 'POST', 'class' => 'float-right', 'onsubmit' => 'return altApp.deleteInvoice()']) !!}
                             {{Form::hidden('_method', 'DELETE')}}
                             {{Form::submit('Delete', ['class' => 'btn btn-danger btn-sm'])}}
                         {!! Form::close() !!}
@@ -36,6 +36,7 @@
             @endforeach
             </tbody>
         </table>
+        {{$invoices->links()}}
     @else
         <p class="alert alert-warning">No invoices found</p>
     @endif

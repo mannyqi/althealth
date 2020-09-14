@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 //use http\Client;
+use App\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Invoice;
 use App\Client;
+use App\Mail\InvoiceEmail;
 use DB;
 
 class InvoicesController extends Controller
@@ -18,14 +21,14 @@ class InvoicesController extends Controller
     public function index()
     {
         // Production
-        $invoices = Invoice::orderBy('Inv_Num', 'desc')->paginate(10);
+        $invoices = Invoice::orderBy('Inv_Num', 'desc')->paginate(20);
 
         // Production
-        $invoices = DB::select("select inv.*, cl.C_name, cl.C_surname
-                                from tblinv_info inv
-                                inner join tblclientinfo cl
-                                on cl.Client_id = inv.Client_id
-                                order by inv.Inv_Num desc limit 10 offset 0");
+//        $invoices = DB::select("select inv.*, cl.C_name, cl.C_surname
+//                                from tblinv_info inv
+//                                inner join tblclientinfo cl
+//                                on cl.Client_id = inv.Client_id
+//                                order by inv.Inv_Num desc limit 10 offset 0");
 
         return view('invoices.index')->with('invoices', $invoices);
     }
@@ -61,33 +64,45 @@ class InvoicesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name'      => 'required',
-            'surname'   => 'required',
-            'idnum'     => 'required'
-//            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
-        ]);
+        if ($request->session()->has('invoice')) {
+            $invoice = $request->session()->get('invoice');
+            $client = $invoice['client'];
+            $items = $invoice['items'];
 
-        // Create Invoices
-        $client = new Invoices;
-        $client->C_name         = $request->input('name');
-        $client->C_surname      = $request->input('surname');
-        $client->Invoices_id      = $request->input('idnum');
-        $client->Address        = $request->input('address');
-        $client->Code           = $request->input('zip');
-        $client->C_Email        = $request->input('email');
-        $client->C_Tel_H        = $request->input('telh');
-        $client->C_Tel_W        = $request->input('telw');
-        $client->C_Tel_Cell     = $request->input('cell');
-        $client->Reference_ID   = $request->input('reference');
-        $client->save();
+            // TODO check if there is available stock and show notice to admin after creating invoice about low stock
 
-        return redirect('/invoices')->with('success', 'Invoices created successfully');
+//            $this->validate($request, [
+//                'name' => 'required',
+//                'surname' => 'required',
+//                'idnum' => 'required'
+//                //            'address'   => 'required',
+//                //            'email'     => 'required',
+//                //            'telh'      => 'required',
+//                //            'telw'      => 'required',
+//                //            'cell'      => 'required',
+//                //            'reference' => 'required'
+//            ]);
+
+            // Create Invoice
+            $inv = new Invoice;
+            $inv->Inv_Num = $invoice['invoice_id'];
+            $inv->Client_id = $client->Client_id;
+            $inv->Inv_Date = date('Y-m-d');
+            $inv->Inv_Paid = 'N';
+            $inv->save();
+
+            // Create invoice items
+            foreach ($items as $item) {
+                $inv_items = new Item;
+                $inv_items->Inv_Num = $invoice['invoice_id'];
+                $inv_items->Supplement_id = $item->supplement_id;
+                $inv_items->Item_Price = $item->cost_excl;
+                $inv_items->Item_Quantity = $item->qty;
+                $inv_items->save();
+            }
+        } else {
+            return redirect('/invoices')->with('error', 'Invoice details missing!');
+        }
     }
 
     /**
@@ -122,7 +137,7 @@ class InvoicesController extends Controller
      */
     public function edit($id)
     {
-        $invoice = DB::select("select * from tblinv_info where Invoice_id = ?", [$id]);
+        $invoice = DB::select("select * from tblinv_info where Inv_Num = ?", [$id]);
 
         return view('invoices.edit')->with('invoice', (object) $invoice);
     }
@@ -221,6 +236,32 @@ class InvoicesController extends Controller
         return redirect('/invoices')->with('success', "Draft invoice discarded successfully!");
     }
 
+    public function issueInvoice(Request $request) {
+        if ($request->session()->has('invoice')) {
+            $data = $request->session()->get('invoice');
+
+            // store invoice in db
+            $this->store($request);
+
+            // send email
+            // TODO set verification_code in global config
+            $data = [
+                'invoice' => $data,
+                'verification_code' => 'TEOTW2020'
+            ];
+
+            // TODO use email from global config
+            Mail::to('emmanuel.minnaar@gmail.com')->send(new InvoiceEmail($data));
+
+            // discard draft invoice
+            $request->session()->flush();
+
+            return redirect('/invoices')->with('success', "Invoice was successfully created and sent!");
+        } else {
+            return redirect('/invoices')->with('error', "Invoice details missing!");
+        }
+    }
+
     /**
      * Generate a new invoice number
      * @return string
@@ -228,7 +269,7 @@ class InvoicesController extends Controller
     private function _generateInvoiceNum()
     {
         $invoice = Invoice::orderBy('Inv_Num', 'desc')->first();
-        $inv_num = str_replace('INV', '', $invoice);
+        $inv_num = str_replace('INV', '', $invoice->Inv_Num);
         $new_inv_num = (int) $inv_num + 1;
 
         if (strlen($inv_num) > strlen($new_inv_num)) {
