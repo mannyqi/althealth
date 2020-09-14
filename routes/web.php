@@ -27,6 +27,7 @@ Route::resource('supplements', 'SupplementsController');
 Route::post('/invoices/create-draft', 'InvoicesController@createDraft');
 Route::post('/invoices/save-draft', 'InvoicesController@saveDraft');
 Route::get('/invoices/discard-draft', 'InvoicesController@discardDraft');
+Route::get('/invoices/issue', 'InvoicesController@issueInvoice');
 Route::resource('invoices', 'InvoicesController');
 
 Route::get('/reports', 'ReportsController@index');
@@ -37,3 +38,4 @@ Route::get('/reports/mis-1', 'ReportsController@mis1');
 Route::get('/reports/mis-2', 'ReportsController@mis2');
 Route::get('/reports/mis-3', 'ReportsController@mis3');
 
+Route::get('/send-mail', 'MailController@sendEmail');

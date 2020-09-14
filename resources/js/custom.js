@@ -1,9 +1,8 @@
 $(function () {
-    var altApp = {
-        error: [],
-        tax_rate: 15,
-        items: []
-    };
+    // altApp is defined in the layout
+    altApp.error = [];
+    altApp.tax_rate = 15;
+    altApp.items = [];
 
     // ----------------------------------------------------------------------------
     // CLIENTS
@@ -76,6 +75,15 @@ $(function () {
         };
 
         return true;
+    };
+
+    altApp.deleteClient = function() {
+        var msg = confirm("Are you sure you want to delete this client?");
+        if (msg == true) {
+            return true;
+        } else {
+            return false;
+        }
     };
 
     // ----------------------------------------------------------------------------
@@ -226,9 +234,8 @@ $(function () {
      */
     altApp.calcInvoiceTotal = function() {
         var subtotal = 0;
-        var totals = [];
-        $('.invoice-line-items tr td .item-subtotal').each(function () {
-            var str_total = $(this).text();
+        $('.invoice-line-items tr td input[name="cost-excl-sum"]').each(function () {
+            var str_total = $(this).val();
             subtotal += parseFloat(str_total.replace('R ', ''));
         });
 
@@ -290,7 +297,6 @@ $(function () {
                     '_token': $('input[name="_token"]').val()
                 },
                 function (data, status) {
-                    console.log('data',data, status);
                     if (status != 'success') {
                         altApp.error.push('There was a problem saving your draft invoice. Please try again later.');
                         altApp.showError();
@@ -299,6 +305,15 @@ $(function () {
                     }
                 }
             );
+        }
+    };
+
+    altApp.deleteInvoice = function() {
+        var msg = confirm("Are you sure you want to delete this invoice?");
+        if (msg == true) {
+            return true;
+        } else {
+            return false;
         }
     };
 
@@ -392,6 +407,7 @@ $(function () {
     // Invoices
     $("#invoice-clients").on("change", altApp.getClientInfo);
     $("#invoice-client-confirm").click(altApp.createDraftInvoice);
+    $('#data-container-invoice .invoice-delete').click(altApp.deleteInvoice);
     altApp.afterAddInvoiceLineItem();
     altApp.populateInvoiceItems();
     // append new line item

@@ -27,14 +27,16 @@
                         <strong>Invoice #:</strong> {{$inv->Inv_Num}}<br />
                         <strong>Date:</strong> {{$inv->Inv_Date}}<br />
                         <strong>Due Date:</strong>
-                        @if($inv->Inv_Paid)
-                            {{$inv->Inv_Paid_Date}}
-                        @else
+                        @if($inv->Inv_Paid == 'N')
                             Within 30 Days
+                        @else
+                            {{$inv->Inv_Paid_Date}}
                         @endif
                     </p>
-                    @if($inv->Inv_Paid)
+                    @if($inv->Inv_Paid == 'Y')
                         <h5 class="text-success"><i>[ PAID ]</i></h5>
+                    @else
+                        <h5 class="text-danger"><i>[ UNPAID ]</i></h5>
                     @endif
                 </div>
             </div>
