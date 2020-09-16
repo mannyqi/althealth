@@ -52,10 +52,6 @@ class InvoicesController extends Controller
         return view('invoices.create')->with($data);
     }
 
-    private function _getNewInvNumber() {
-
-    }
-
     /**
      * Store a newly created resource in storage.
      *

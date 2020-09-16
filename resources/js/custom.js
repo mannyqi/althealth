@@ -1,7 +1,6 @@
 $(function () {
-    // altApp is defined in the layout
+    // altApp is defined in the layouts/app.blade.php
     altApp.error = [];
-    altApp.tax_rate = 15;
     altApp.items = [];
 
     // ----------------------------------------------------------------------------
@@ -94,13 +93,31 @@ $(function () {
         altApp.error = [];
         $('#error-messages').hide();
 
+        if ($('#name').val() == '') {
+            altApp.error.push('Please enter a supplier name');
+        }
+        if ($('#contact').val() == '') {
+            altApp.error.push('Please enter a contact persons name');
+        }
         if (altApp.validatePhone($('#tel').val()) == false) {
             altApp.error.push('Invalid telephone number format');
+        }
+        if (altApp.validateEmail($('#email').val()) == false) {
+            altApp.error.push('Invalid email address');
         }
 
         if (altApp.error.length > 0) {
             form.preventDefault();
             altApp.showError();
+        }
+    };
+
+    altApp.deleteSupplier = function() {
+        var msg = confirm("Are you sure you want to delete this supplier?");
+        if (msg == true) {
+            return true;
+        } else {
+            return false;
         }
     };
 
@@ -112,8 +129,36 @@ $(function () {
         altApp.error = [];
         $('#error-messages').hide();
 
+        if ($('input[name="name"]').val() == '') {
+            altApp.error.push('Please enter a supplement name');
+        }
         if ($('#supplier').val() == '') {
             altApp.error.push('Please select a supplier');
+        }
+        if ($('input[name="costexcl"]').val() == '') {
+            altApp.error.push('Please enter the supplement cost');
+        }
+        if (
+            $('input[name="rate"]').val() == '' ||
+            isNaN($('input[name="rate"]').val()) ||
+            $('input[name="rate"]').val() < 0 ||
+            $('input[name="rate"]').val() > 90 // We're assuming there won't be a tax rate greater than 90%
+        ) {
+            altApp.error.push('Please enter a valid VAT rate');
+        }
+        if (
+            $('input[name="qty"]').val() == '' ||
+            isNaN($('input[name="qty"]').val()) ||
+            $('input[name="qty"]').val() < 1
+        ) {
+            altApp.error.push('Please enter the stock amount');
+        }
+        if (
+            $('input[name="minlvl"]').val() == '' ||
+            isNaN($('input[name="minlvl"]').val()) ||
+            $('input[name="minlvl"]').val() < 1
+        ) {
+            altApp.error.push('Please enter a minimum level. Must be greater than 0');
         }
 
         if (altApp.error.length > 0) {
@@ -138,6 +183,15 @@ $(function () {
             CostExclEl.val(costIncl.toFixed(2));
         } else {
             CostExclEl.val('0.00');
+        }
+    };
+
+    altApp.deleteSupplement = function() {
+        var msg = confirm("Are you sure you want to delete this supplement?");
+        if (msg == true) {
+            return true;
+        } else {
+            return false;
         }
     };
 
@@ -191,6 +245,7 @@ $(function () {
 
     altApp.deleteInvoiceLineItem = function(e) {
         $(e.target).parents('tr').remove();
+        console.log('delete');
         altApp.calcLineitemTotal(e);
     };
 
@@ -276,36 +331,35 @@ $(function () {
         // check for supplement id before adding line item to object
         // save json line item data to session
         var i = 0;
+        var items = [];
         $('.invoice-line-items tbody tr').each(function () {
             var line_item = $(this);
             var suppl = line_item.find('select.invoice-lineitem-supplement').children("option:selected");
             if (suppl.val()) {
-                altApp.items[i] = {};
-                altApp.items[i].supplement_id = suppl.val();
-                altApp.items[i].cost_excl = suppl.attr('data-cost');
-                altApp.items[i].qty = line_item.find('.line-item-qty').val();
+                items[i] = {};
+                items[i].supplement_id = suppl.val();
+                items[i].cost_excl = suppl.attr('data-cost');
+                items[i].qty = line_item.find('.line-item-qty').val();
 
                 i++;
             }
         });
 
-        if (altApp.items.length > 0) {
-            // save to session
-            $.post('/invoices/save-draft',
-                {
-                    'items': JSON.stringify(altApp.items),
-                    '_token': $('input[name="_token"]').val()
-                },
-                function (data, status) {
-                    if (status != 'success') {
-                        altApp.error.push('There was a problem saving your draft invoice. Please try again later.');
-                        altApp.showError();
-                    } else {
-                        //location.reload();
-                    }
+        // save to session
+        $.post('/invoices/save-draft',
+            {
+                'items': JSON.stringify(items),
+                '_token': $('input[name="_token"]').val()
+            },
+            function (data, status) {
+                if (status != 'success') {
+                    altApp.error.push('There was a problem saving your draft invoice. Please try again later.');
+                    altApp.showError();
+                } else {
+                    //location.reload();
                 }
-            );
-        }
+            }
+        );
     };
 
     altApp.deleteInvoice = function() {
@@ -321,7 +375,7 @@ $(function () {
     // GLOBAL
     // ----------------------------------------------------------------------------
     altApp.calcCostIncl = function(cost_excl) {
-        return parseFloat(cost_excl) * (altApp.tax_rate / 100 + 1)
+        return parseFloat(cost_excl) * (parseFloat(altApp.tax_rate) / 100 + 1)
     };
 
     altApp.formatPrice = function(price) {
@@ -407,7 +461,6 @@ $(function () {
     // Invoices
     $("#invoice-clients").on("change", altApp.getClientInfo);
     $("#invoice-client-confirm").click(altApp.createDraftInvoice);
-    $('#data-container-invoice .invoice-delete').click(altApp.deleteInvoice);
     altApp.afterAddInvoiceLineItem();
     altApp.populateInvoiceItems();
     // append new line item

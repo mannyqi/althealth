@@ -47,13 +47,13 @@ class ClientsController extends Controller
         $this->validate($request, [
             'name'      => 'required',
             'surname'   => 'required',
-            'idnum'     => 'required'
+            'idnum'     => 'required',
 //            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
+            'email'     => 'required',
+            'telh'      => 'required',
+            'telw'      => 'required',
+            'cell'      => 'required',
+            'reference' => 'required'
         ]);
 
         // Create Client
@@ -120,13 +120,13 @@ class ClientsController extends Controller
         $this->validate($request, [
             'name'      => 'required',
             'surname'   => 'required',
-            'idnum'     => 'required'
+            'idnum'     => 'required',
 //            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
+            'email'     => 'required',
+            'telh'      => 'required',
+            'telw'      => 'required',
+            'cell'      => 'required',
+            'reference' => 'required'
         ]);
 
         // Create Client

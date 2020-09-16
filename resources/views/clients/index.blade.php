@@ -25,7 +25,7 @@
                     <td class="text-right">
                         <a href="/clients/{{$client->Client_id}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;
 
-                        {!! Form::open(['action' => ['ClientsController@destroy', $client->Client_id], 'method' => 'POST', 'class' => 'float-right']) !!}
+                        {!! Form::open(['action' => ['ClientsController@destroy', $client->Client_id], 'method' => 'POST', 'class' => 'float-right', 'onsubmit' => 'return altApp.deleteClient()']) !!}
                             {{Form::hidden('_method', 'DELETE')}}
                             {{Form::submit('Delete', ['class' => 'btn btn-danger btn-sm'])}}
                         {!! Form::close() !!}

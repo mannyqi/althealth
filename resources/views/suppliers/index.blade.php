@@ -25,7 +25,7 @@
                     <td class="text-right">
                         <a href="/suppliers/{{$supplier->Supplier_id}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;
 
-                        {!! Form::open(['action' => ['SuppliersController@destroy', $supplier->Supplier_id], 'method' => 'POST', 'class' => 'float-right']) !!}
+                        {!! Form::open(['action' => ['SuppliersController@destroy', $supplier->Supplier_id], 'method' => 'POST', 'class' => 'float-right', 'onsubmit' => 'return altApp.deleteSupplier()']) !!}
                             {{Form::hidden('_method', 'DELETE')}}
                             {{Form::submit('Delete', ['class' => 'btn btn-danger btn-sm'])}}
                         {!! Form::close() !!}

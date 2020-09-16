@@ -43,32 +43,25 @@ class SuppliersController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'      => 'required',
-            'surname'   => 'required',
-            'idnum'     => 'required'
-//            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
+            'name'       => 'required',
+            'contact'    => 'required',
+            'tel'        => 'required',
+            'email'      => 'required'
         ]);
 
-        // Create Suppliers
-        $client = new Suppliers;
-        $client->C_name         = $request->input('name');
-        $client->C_surname      = $request->input('surname');
-        $client->Suppliers_id      = $request->input('idnum');
-        $client->Address        = $request->input('address');
-        $client->Code           = $request->input('zip');
-        $client->C_Email        = $request->input('email');
-        $client->C_Tel_H        = $request->input('telh');
-        $client->C_Tel_W        = $request->input('telw');
-        $client->C_Tel_Cell     = $request->input('cell');
-        $client->Reference_ID   = $request->input('reference');
-        $client->save();
+        // Create Supplier
+        $supplier = new Supplier;
+        $supplier->Supplier_id                       = $request->input('name');
+        $supplier->Contact_Person                    = $request->input('contact');
+        $supplier->Supplier_Tel                     = $request->input('tel');
+        $supplier->Supplier_Email                    = $request->input('email');
+        $supplier->Bank                              = $request->input('bank');
+        $supplier->Bank_Code                         = $request->input('branch');
+        $supplier->Supplier_BankNum                 = $request->input('account_num');
+        $supplier->Supplier_Type_Bank_Account        = $request->input('account_type');
+        $supplier->save();
 
-        return redirect('/suppliers')->with('success', 'Suppliers created successfully');
+        return redirect('/suppliers')->with('success', 'Supplier created successfully');
     }
 
     /**
@@ -107,32 +100,25 @@ class SuppliersController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name'      => 'required',
-            'surname'   => 'required',
-            'idnum'     => 'required'
-//            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
+            'name'       => 'required',
+            'contact'    => 'required',
+            'tel'        => 'required',
+            'email'      => 'required'
         ]);
 
-        // Create Suppliers
-        $client = Supplier::find($id);
-        $client->C_name         = $request->input('name');
-        $client->C_surname      = $request->input('surname');
-        $client->Suppliers_id      = $request->input('idnum');
-        $client->Address        = $request->input('address');
-        $client->Code           = $request->input('zip');
-        $client->C_Email        = $request->input('email');
-        $client->C_Tel_H        = $request->input('telh');
-        $client->C_Tel_W        = $request->input('telw');
-        $client->C_Tel_Cell     = $request->input('cell');
-        $client->Reference_ID   = $request->input('reference');
-        $client->save();
+        // Update Suppliers
+        $supplier = Supplier::find($id);
+        $supplier->Supplier_id                       = $request->input('name');
+        $supplier->Contact_Person                    = $request->input('contact');
+        $supplier->Supplier_Tel                      = $request->input('tel');
+        $supplier->Supplier_Email                    = $request->input('email');
+        $supplier->Bank                              = $request->input('bank');
+        $supplier->Bank_Code                         = $request->input('branch');
+        $supplier->Supplier_BankNum                  = $request->input('account_num');
+        $supplier->Supplier_Type_Bank_Account        = $request->input('account_type');
+        $supplier->save();
 
-        return redirect('/suppliers')->with('success', "Suppliers '$id' updated successfully");
+        return redirect('/suppliers')->with('success', "Supplier '$id' updated successfully");
     }
 
     /**

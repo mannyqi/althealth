@@ -35,7 +35,7 @@
             </div>
             <div class="form-group col-sm-2">
                 {{Form::label('rate', 'VAT Rate (%)')}}
-                {{Form::text('rate', '', ['class' => 'form-control', 'placeholder' => 'eg. 15'])}}
+                {{Form::text('rate', config('custom.tax_rate', 15), ['class' => 'form-control', 'disabled'])}}
             </div>
             <div class="form-group col-sm-3">
                 {{Form::label('costincl', 'Cost Incl.')}}

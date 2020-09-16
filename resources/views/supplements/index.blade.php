@@ -27,7 +27,7 @@
                     <td class="text-right">
                         <a href="/supplements/{{$supplement->Supplement_id}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;
 
-                        {!! Form::open(['action' => ['SupplementsController@destroy', $supplement->Supplement_id], 'method' => 'POST', 'class' => 'float-right']) !!}
+                        {!! Form::open(['action' => ['SupplementsController@destroy', $supplement->Supplement_id], 'method' => 'POST', 'class' => 'float-right', 'onsubmit' => 'return altApp.deleteSupplement()']) !!}
                             {{Form::hidden('_method', 'DELETE')}}
                             {{Form::submit('Delete', ['class' => 'btn btn-danger btn-sm'])}}
                         {!! Form::close() !!}

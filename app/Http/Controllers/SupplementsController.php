@@ -45,32 +45,26 @@ class SupplementsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'      => 'required',
-            'surname'   => 'required',
-            'idnum'     => 'required'
-//            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
+            'name'          => 'required',
+            'supplier'      => 'required',
+            'costexcl'      => 'required',
+            'qty'           => 'required',
+            'minlvl'        => 'required'
         ]);
 
         // Create Supplements
-        $client = new Supplements;
-        $client->C_name         = $request->input('name');
-        $client->C_surname      = $request->input('surname');
-        $client->Supplements_id      = $request->input('idnum');
-        $client->Address        = $request->input('address');
-        $client->Code           = $request->input('zip');
-        $client->C_Email        = $request->input('email');
-        $client->C_Tel_H        = $request->input('telh');
-        $client->C_Tel_W        = $request->input('telw');
-        $client->C_Tel_Cell     = $request->input('cell');
-        $client->Reference_ID   = $request->input('reference');
-        $client->save();
+        $sup = new Supplement;
+        $sup->Supplement_id             = $this->_generateSupplementId();
+        $sup->Supplement_Description    = $request->input('name');
+        $sup->Supplier_id               = $request->input('supplier');
+        $sup->Nappi_code                = $request->input('nappi');
+        $sup->Cost_excl                 = $request->input('costexcl');
+        $sup->Cost_incl                 = $request->input('costexcl') * (config('custom.tax_rate') / 100 + 1);
+        $sup->Current_stock_levels      = $request->input('qty');
+        $sup->Min_levels                = $request->input('minlvl');
+        $sup->save();
 
-        return redirect('/supplements')->with('success', 'Supplements created successfully');
+        return redirect('/supplements')->with('success', 'Supplement created successfully');
     }
 
     /**
@@ -116,32 +110,25 @@ class SupplementsController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name'      => 'required',
-            'surname'   => 'required',
-            'idnum'     => 'required'
-//            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
+            'name'          => 'required',
+            'supplier'      => 'required',
+            'costexcl'      => 'required',
+            'qty'           => 'required',
+            'minlvl'        => 'required'
         ]);
 
         // Create Supplements
-        $client = Supplement::find($id);
-        $client->C_name         = $request->input('name');
-        $client->C_surname      = $request->input('surname');
-        $client->Supplements_id      = $request->input('idnum');
-        $client->Address        = $request->input('address');
-        $client->Code           = $request->input('zip');
-        $client->C_Email        = $request->input('email');
-        $client->C_Tel_H        = $request->input('telh');
-        $client->C_Tel_W        = $request->input('telw');
-        $client->C_Tel_Cell     = $request->input('cell');
-        $client->Reference_ID   = $request->input('reference');
-        $client->save();
+        $sup = Supplement::find($id);
+        $sup->Supplement_Description    = $request->input('name');
+        $sup->Supplier_id               = $request->input('supplier');
+        $sup->Nappi_code                = $request->input('nappi');
+        $sup->Cost_excl                 = $request->input('costexcl');
+        $sup->Cost_incl                 = $request->input('costexcl') * (config('custom.tax_rate') / 100 + 1);
+        $sup->Current_stock_levels      = $request->input('qty');
+        $sup->Min_levels                = $request->input('minlvl');
+        $sup->save();
 
-        return redirect('/supplements')->with('success', "Supplements '$id' updated successfully");
+        return redirect('/supplements')->with('success', "Supplement '$id' updated successfully");
     }
 
     /**
@@ -156,5 +143,22 @@ class SupplementsController extends Controller
         $client->delete();
 
         return redirect('/supplements')->with('success', "Supplements '$id' was removed");
+    }
+
+    /**
+     * Generate a new supplement ID
+     * @return string
+     */
+    private function _generateSupplementId()
+    {
+        $sup = DB::select("SELECT Supplement_id FROM `tblsupplements` ORDER BY CONVERT(REPLACE(`Supplement_id`, 'Supplement-', ''), INT) DESC LIMIT 1");
+        $new_sup_id = 0;
+        foreach ($sup as $row) {
+            $sup_id = str_replace('Supplement-', '', $row->Supplement_id);
+            $new_sup_id = (int) $sup_id + 1;
+            $new_sup_id = 'Supplement-' . $new_sup_id;
+        }
+
+        return $new_sup_id;
     }
 }

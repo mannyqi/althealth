@@ -7,7 +7,11 @@
 
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
 
-    <script type="text/javascript">altApp = {};</script>
+    <script type="text/javascript">
+        altApp = {
+            tax_rate: "{{config('custom.tax_rate', 13)}}"
+        };
+    </script>
     <script type="text/javascript" src="{{asset('js/app.js')}}"></script>
 
     <title>{{config('app.name', 'AltHealth')}}</title>
