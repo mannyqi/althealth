@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-    <a href="/invoices" class="btn btn-secondary"><< Back</a>
-
     <div class="invoice-preview">
         <?php
         $cnt = 1;
@@ -18,6 +15,12 @@
 
             @if($cnt == 1)
             <div class="row">
+                <div class="col-sm-6"><a href="/invoices" class="btn btn-secondary"><< Back</a></div>
+                @if($inv->Inv_Paid == 'N')
+                    <div class="col-sm-6 text-right"><a href="/invoices/pay/{{$inv->Inv_Num}}" class="btn btn-primary">Mark as Paid</a></div>
+                @endif
+            </div>
+            <div class="row">
                 <div class="col-6">
                     <img src="{{asset('images/logo.png')}}" style="max-width: 100px" class="img-fluid logo" alt="{{config('app.name', 'AltHealth')}}" />
                 </div>
@@ -26,10 +29,11 @@
                     <p>
                         <strong>Invoice #:</strong> {{$inv->Inv_Num}}<br />
                         <strong>Date:</strong> {{$inv->Inv_Date}}<br />
-                        <strong>Due Date:</strong>
                         @if($inv->Inv_Paid == 'N')
+                            <strong>Due Date:</strong>
                             Within 30 Days
                         @else
+                            <strong>Date Received:</strong>
                             {{$inv->Inv_Paid_Date}}
                         @endif
                     </p>

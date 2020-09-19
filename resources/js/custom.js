@@ -245,7 +245,6 @@ $(function () {
 
     altApp.deleteInvoiceLineItem = function(e) {
         $(e.target).parents('tr').remove();
-        console.log('delete');
         altApp.calcLineitemTotal(e);
     };
 
@@ -260,6 +259,12 @@ $(function () {
         var supplement = item_row.find('select.invoice-lineitem-supplement');
         var cost_excl = supplement.children("option:selected").attr('data-cost');
         var supplement_desc = supplement.children("option:selected").attr('data-title');
+
+        if (supplement.val() == '') {
+            supplement.addClass('border-danger');
+        } else {
+            supplement.removeClass('border-danger');
+        }
 
         var qty = item_row.find('.line-item-qty').val();
         if (isNaN(qty)) {
@@ -307,7 +312,7 @@ $(function () {
     altApp.populateInvoiceItems = function() {
         var subtotal = 0;
         var totals = [];
-        $('.invoice-line-items tr').each(function () {
+        $('.invoice-line-items tbody tr').each(function () {
             var item_row = $(this);
             var supplement = item_row.find('select.invoice-lineitem-supplement');
             var cost_excl = supplement.children("option:selected").attr('data-cost');
@@ -324,6 +329,7 @@ $(function () {
             // Populate invoice total
             altApp.calcInvoiceTotal();
         });
+        altApp.toggleIssueBtn();
     };
 
     altApp.saveLineItems = function() {
@@ -360,12 +366,61 @@ $(function () {
                 }
             }
         );
+
+        altApp.toggleIssueBtn();
     };
 
     altApp.deleteInvoice = function() {
         var msg = confirm("Are you sure you want to delete this invoice?");
         if (msg == true) {
             return true;
+        } else {
+            return false;
+        }
+    };
+
+    altApp.toggleIssueBtn = function() {
+        if ($('.invoice-line-items tbody tr').length) {
+            $('#invoice-issue').show();
+        } else {
+            $('#invoice-issue').hide();
+        }
+    };
+
+    altApp.issueInvoice = function() {
+        // validate line items
+        var hasError = false;
+        $('.invoice-line-items tbody tr').each(function () {
+            var line_item = $(this);
+            var supplementEl = line_item.find('.invoice-lineitem-supplement');
+            var qtyEl = line_item.find('.line-item-qty');
+
+            if (isNaN(qtyEl.val()) || supplementEl.val() == '') {
+                hasError = true;
+                if (isNaN(qtyEl.val())) {
+                    qtyEl.addClass('border-danger');
+                }
+                if (supplementEl.val() == '') {
+                    supplementEl.addClass('border-danger');
+                }
+            }
+        });
+        if (hasError) {
+            alert('Please ensure all quantities are valid integer values');
+        } else {
+            var msg = confirm("Are you sure you want to issue this invoice?\n\nNote that invoice will be saved to the database and emailed to client");
+            if (msg == true) {
+                window.location.href = "/invoices/issue";
+            } else {
+                return false;
+            }
+        }
+    };
+
+    altApp.discardInvoice = function() {
+        var msg = confirm("Are you sure you want to discard this draft invoice?");
+        if (msg == true) {
+            window.location.href = "/invoices/discard-draft";
         } else {
             return false;
         }
@@ -465,5 +520,7 @@ $(function () {
     altApp.populateInvoiceItems();
     // append new line item
     $("#create-invoice-lineitem").click(altApp.addInvoiceLineItem);
+    $('#invoice-issue').click(altApp.issueInvoice);
+    $('#invoice-discard').click(altApp.discardInvoice);
     //
 });

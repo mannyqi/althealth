@@ -258,15 +258,46 @@ class InvoicesController extends Controller
         }
     }
 
+    public function markPaid($id)
+    {
+        $invoice = DB::select("select * from tblinv_info where Inv_Num = ?", [$id]);
+
+//        dd($invoice);
+
+        return view('invoices.mark-paid')->with('invoice', $invoice);
+    }
+
+    public function confirmPayment(Request $request) {
+        $this->validate($request, [
+            'inv_num'       => 'required',
+            'date_paid'     => 'required'
+        ]);
+
+        $id = $request->input('inv_num');
+
+        // Mark invoice as paid
+        $invoice = Invoice::find($id);
+        $invoice->Inv_Paid       = 'Y';
+        $invoice->Inv_Paid_Date  = $request->input('date_paid');
+        $invoice->Comments       = $request->input('comment');
+        $invoice->save();
+
+        return redirect('/invoices/' . $id)->with('success', "Invoice '$id' was marked as paid");
+    }
+
     /**
      * Generate a new invoice number
      * @return string
      */
     private function _generateInvoiceNum()
     {
-        $invoice = Invoice::orderBy('Inv_Num', 'desc')->first();
-        $inv_num = str_replace('INV', '', $invoice->Inv_Num);
-        $new_inv_num = (int) $inv_num + 1;
+        $invoice = DB::select("SELECT Inv_Num FROM `tblinv_info`  ORDER BY CONVERT(REPLACE(`Inv_Num`, 'INV', ''), INT) DESC LIMIT 1");
+
+        foreach ($invoice as $row) {
+            $inv_num = str_replace('INV', '', $row->Inv_Num);
+            $new_inv_num = (int) $inv_num + 1;
+//            $new_inv_num = 'INV' . $new_inv_num;
+        }
 
         if (strlen($inv_num) > strlen($new_inv_num)) {
 

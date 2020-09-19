@@ -26,8 +26,10 @@ Route::resource('supplements', 'SupplementsController');
 
 Route::post('/invoices/create-draft', 'InvoicesController@createDraft');
 Route::post('/invoices/save-draft', 'InvoicesController@saveDraft');
+Route::post('/invoices/confirm-payment', 'InvoicesController@confirmPayment');
 Route::get('/invoices/discard-draft', 'InvoicesController@discardDraft');
 Route::get('/invoices/issue', 'InvoicesController@issueInvoice');
+Route::get('/invoices/pay/{id}', 'InvoicesController@markPaid');
 Route::resource('invoices', 'InvoicesController');
 
 Route::get('/reports', 'ReportsController@index');

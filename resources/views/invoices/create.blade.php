@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-6"><h1>Create Invoice</h1></div>
         @if(Session::get('invoice'))
-            <div class="col-sm-6 text-right"><a href="/invoices/discard-draft" class="btn btn-danger">Discard Draft Invoice</a></div>
+            <div class="col-sm-6 text-right"><a href="javascript:;" id="invoice-discard" class="btn btn-danger">Discard Draft Invoice</a></div>
         @else
             <div class="col-sm-6 text-right"><a href="/invoices" class="btn btn-secondary"><< Back</a></div>
         @endif
@@ -26,7 +26,7 @@
                 <div class="col-6 text-right">
                     <h1>INVOICE</h1>
                     <p>
-                        <strong>Invoice #:</strong> INV1000<br />
+                        <strong>Invoice #:</strong> {{$invoice['invoice_id']}}<br />
                         <strong>Date:</strong> {{date('d-m-Y')}}
                     </p>
                 </div>
@@ -121,7 +121,7 @@
         {!! Form::close() !!}
 
         <div class="row">
-            <div class="col text-right"><a href="/invoices/issue" class="btn btn-info float-right" title="Create and email invoice to client">Issue Invoice</a></div>
+            <div class="col text-right"><a href="javascript:;" style="display: none;" class="btn btn-info float-right" id="invoice-issue" title="Create and email invoice to client">Issue Invoice</a></div>
         </div>
     @else
         {!! Form::open(['action' => 'InvoicesController@store', 'method' => 'POST']) !!}
