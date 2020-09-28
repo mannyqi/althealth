@@ -4,7 +4,7 @@
 
     <div class="row">
         <div class="col-sm-6"><h1>Edit Client</h1></div>
-        <div class="col-sm-6 text-right"><a href="/clients" class="btn btn-secondary"><< Back</a></div>
+        <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/clients" class="btn btn-secondary"><< Back</a></div>
     </div>
 
     @foreach($client as $c)

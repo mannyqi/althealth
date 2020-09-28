@@ -15,9 +15,9 @@
 
             @if($cnt == 1)
             <div class="row">
-                <div class="col-sm-6"><a href="/invoices" class="btn btn-secondary"><< Back</a></div>
+                <div class="col-sm-6"><a href="{{ env('APP_URL') }}/invoices" class="btn btn-secondary"><< Back</a></div>
                 @if($inv->Inv_Paid == 'N')
-                    <div class="col-sm-6 text-right"><a href="/invoices/pay/{{$inv->Inv_Num}}" class="btn btn-primary">Mark as Paid</a></div>
+                    <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/invoices/pay/{{$inv->Inv_Num}}" class="btn btn-primary">Mark as Paid</a></div>
                 @endif
             </div>
             <div class="row">

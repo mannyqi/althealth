@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-6"><h1>Supplements</h1></div>
-        <div class="col-sm-6 text-right"><a href="/supplements/create" class="btn btn-success">Create New Supplement</a></div>
+        <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/supplements/create" class="btn btn-success">Create New Supplement</a></div>
     </div>
 
     @if(count($supplements) > 0)
@@ -20,12 +20,12 @@
             <tbody id="data-container-supplement">
             @foreach ($supplements as $supplement)
                 <tr>
-                    <td><a href="/supplements/{{$supplement->Supplement_id}}" title="View supplement info">{{$supplement->Supplement_id}}</a></td>
+                    <td><a href="{{ env('APP_URL') }}/supplements/{{$supplement->Supplement_id}}" title="View supplement info">{{$supplement->Supplement_id}}</a></td>
                     <td>{{$supplement->Supplier_id}}</td>
                     <td>{{$supplement->Supplement_Description}}</td>
                     <td>{{$supplement->Current_stock_levels}}</td>
                     <td class="text-right">
-                        <a href="/supplements/{{$supplement->Supplement_id}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;
+                        <a href="{{ env('APP_URL') }}/supplements/{{$supplement->Supplement_id}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;
 
                         {!! Form::open(['action' => ['SupplementsController@destroy', $supplement->Supplement_id], 'method' => 'POST', 'class' => 'float-right', 'onsubmit' => 'return altApp.deleteSupplement()']) !!}
                             {{Form::hidden('_method', 'DELETE')}}

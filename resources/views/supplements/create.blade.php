@@ -4,7 +4,7 @@
 
     <div class="row">
         <div class="col-sm-6"><h1>Create Supplement</h1></div>
-        <div class="col-sm-6 text-right"><a href="/supplements" class="btn btn-secondary"><< Back</a></div>
+        <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/supplements" class="btn btn-secondary"><< Back</a></div>
     </div>
 
     {!! Form::open(['action' => 'SupplementsController@store', 'method' => 'POST']) !!}

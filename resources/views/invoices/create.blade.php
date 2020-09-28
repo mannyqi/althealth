@@ -7,7 +7,7 @@
         @if(Session::get('invoice'))
             <div class="col-sm-6 text-right"><a href="javascript:;" id="invoice-discard" class="btn btn-danger">Discard Draft Invoice</a></div>
         @else
-            <div class="col-sm-6 text-right"><a href="/invoices" class="btn btn-secondary"><< Back</a></div>
+            <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/invoices" class="btn btn-secondary"><< Back</a></div>
         @endif
     </div>
 

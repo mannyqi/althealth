@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <a href="/suppliers" class="btn btn-secondary"><< Back</a>
+    <a href="{{ env('APP_URL') }}/suppliers" class="btn btn-secondary"><< Back</a>
     @foreach($supplier as $s)
         <h1>{{$s->Supplier_id}}</h1>
         <p><strong>Contact Person:</strong> {{$s->Contact_Person}}</p>

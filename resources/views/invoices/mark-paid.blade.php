@@ -4,7 +4,7 @@
     <div class="invoice-mark-paid">
         <div class="row">
             <div class="col-sm-6"><h1>Mark Invoice {{$invoice[0]->Inv_Num}} as Paid</h1></div>
-            <div class="col-sm-6 text-right"><a href="/invoices" class="btn btn-danger">Cancel</a></div>
+            <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/invoices" class="btn btn-danger">Cancel</a></div>
         </div>
         {!! Form::open(['action' => 'InvoicesController@confirmPayment', 'method' => 'POST']) !!}
         @foreach($invoice as $inv)
