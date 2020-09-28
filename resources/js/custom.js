@@ -410,7 +410,7 @@ $(function () {
         } else {
             var msg = confirm("Are you sure you want to issue this invoice?\n\nNote that invoice will be saved to the database and emailed to client");
             if (msg == true) {
-                window.location.href = "/invoices/issue";
+                window.location.href = "{{ env('APP_URL') }}/invoices/issue";
             } else {
                 return false;
             }
@@ -420,7 +420,7 @@ $(function () {
     altApp.discardInvoice = function() {
         var msg = confirm("Are you sure you want to discard this draft invoice?");
         if (msg == true) {
-            window.location.href = "/invoices/discard-draft";
+            window.location.href = "{{ env('APP_URL') }}/invoices/discard-draft";
         } else {
             return false;
         }
