@@ -209,7 +209,7 @@ $(function () {
         var el = $(e.target);
         $('#invoice-client-confirm-info').hide();
 
-        $.get('/clients/json/' + el.val(), function (data) {
+        $.get(altApp.app_url + '/clients/json/' + el.val(), function (data) {
             try {
                 data = JSON.parse(data);
                 if (data) {
@@ -227,7 +227,7 @@ $(function () {
     };
 
     altApp.createDraftInvoice = function () {
-        $.post('/invoices/create-draft',
+        $.post(altApp.app_url + '/invoices/create-draft',
             {
                 'client_id': $('#invoice-clients').val(),
                 '_token': $('input[name="_token"]').val()
@@ -359,7 +359,7 @@ $(function () {
         });
 
         // save to session
-        $.post('/invoices/save-draft',
+        $.post(altApp.app_url + '/invoices/save-draft',
             {
                 'items': JSON.stringify(items),
                 '_token': $('input[name="_token"]').val()
