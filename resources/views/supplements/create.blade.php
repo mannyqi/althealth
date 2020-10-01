@@ -9,7 +9,7 @@
 
     {!! Form::open(['action' => 'SupplementsController@store', 'method' => 'POST']) !!}
         <div class="form-group">
-            {{Form::label('name', 'Name')}}
+            {{Form::label('name', 'Name')}} <span class="text-danger">*</span>
             {{Form::text('name', '', ['class' => 'form-control'])}}
         </div>
         <div class="form-row">
@@ -20,7 +20,7 @@
                     $sup[$supplier->Supplier_id] = $supplier->Supplier_id;
                 }
                 ?>
-                {{Form::label('supplier', 'Supplier')}}
+                {{Form::label('supplier', 'Supplier')}} <span class="text-danger">*</span>
                 {{Form::select('supplier', $sup, '', ['class' => 'form-control'])}}
             </div>
             <div class="form-group col-md-6">
@@ -30,7 +30,7 @@
         </div>
         <div class="form-row">
             <div class="form-group col-sm-3">
-                {{Form::label('costexcl', 'Cost Excl.')}}
+                {{Form::label('costexcl', 'Cost Excl.')}} <span class="text-danger">*</span>
                 {{Form::text('costexcl', '', ['class' => 'form-control'])}}
             </div>
             <div class="form-group col-sm-2">
@@ -42,11 +42,11 @@
                 {{Form::text('costincl', '0.00', ['class' => 'form-control', 'disabled'])}}
             </div>
             <div class="form-group col-sm-2">
-                {{Form::label('qty', 'Stock Qty')}}
+                {{Form::label('qty', 'Stock Qty')}} <span class="text-danger">*</span>
                 {{Form::text('qty', '', ['class' => 'form-control'])}}
             </div>
             <div class="form-group col-sm-2">
-                {{Form::label('minlvl', 'Min Level')}}
+                {{Form::label('minlvl', 'Min Level')}} <span class="text-danger">*</span>
                 {{Form::text('minlvl', '', ['class' => 'form-control'])}}
             </div>
         </div>

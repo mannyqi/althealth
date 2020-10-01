@@ -11,20 +11,20 @@
     {!! Form::open(['action' => ['SuppliersController@update', $s->Supplier_id], 'method' => 'POST']) !!}
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{Form::label('name', 'Name (ID)')}}
+                {{Form::label('name', 'Name (ID)')}} <span class="text-danger">*</span>
                 {{Form::text('name', $s->Supplier_id, ['class' => 'form-control'])}}
             </div>
             <div class="form-group col-md-6">
-                {{Form::label('contact', 'Contact Person')}}
+                {{Form::label('contact', 'Contact Person')}} <span class="text-danger">*</span>
                 {{Form::text('contact', $s->Contact_Person, ['class' => 'form-control'])}}
             </div>
         </div>
         <div class="form-group">
-            {{Form::label('tel', 'Telephone')}}
+            {{Form::label('tel', 'Telephone')}} <span class="text-danger">*</span>
             {{Form::text('tel', $s->Supplier_Tel, ['class' => 'form-control', 'placeholder' => 'e.g. (123)-(456)-(7890)'])}}
         </div>
         <div class="form-group">
-            {{Form::label('email', 'Email')}}
+            {{Form::label('email', 'Email')}} <span class="text-danger">*</span>
             {{Form::email('email', $s->Supplier_Email, ['class' => 'form-control'])}}
         </div>
         <h3>Banking Details:</h3>
@@ -49,7 +49,7 @@
             </div>
         </div>
         {{Form::hidden('_method', 'PUT')}}
-        {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}
+        {{Form::submit('Submit', ['class' => 'btn btn-primary suppliers-form-btn'])}}
     {!! Form::close() !!}
     @endforeach
 

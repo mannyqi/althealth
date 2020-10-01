@@ -10,20 +10,20 @@
     {!! Form::open(['action' => 'SuppliersController@store', 'method' => 'POST']) !!}
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{Form::label('name', 'Name (ID)')}}
+                {{Form::label('name', 'Name (ID)')}} <span class="text-danger">*</span>
                 {{Form::text('name', '', ['class' => 'form-control'])}}
             </div>
             <div class="form-group col-md-6">
-                {{Form::label('contact', 'Contact Person')}}
+                {{Form::label('contact', 'Contact Person')}} <span class="text-danger">*</span>
                 {{Form::text('contact', '', ['class' => 'form-control'])}}
             </div>
         </div>
         <div class="form-group">
-            {{Form::label('tel', 'Telephone')}}
+            {{Form::label('tel', 'Telephone')}} <span class="text-danger">*</span>
             {{Form::text('tel', '', ['class' => 'form-control', 'placeholder' => 'e.g. (123)-(456)-(7890)', 'maxlength' => '18'])}}
         </div>
         <div class="form-group">
-            {{Form::label('email', 'Email')}}
+            {{Form::label('email', 'Email')}} <span class="text-danger">*</span>
             {{Form::email('email', '', ['class' => 'form-control'])}}
         </div>
         <h3>Banking Details:</h3>
