@@ -3,7 +3,13 @@
 @section('content')
     <div class="row">
         <div class="col-sm-6"><h1>Invoices</h1></div>
-        <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/invoices/create" class="btn btn-success">Create New Invoice</a></div>
+        <div class="col-sm-6 text-right">
+            @if(Session::get('invoice'))
+                <a href="{{ env('APP_URL') }}/invoices/create" class="btn btn-warning">Edit Draft Invoice</a>
+            @else
+                <a href="{{ env('APP_URL') }}/invoices/create" class="btn btn-success">Create New Invoice</a>
+            @endif
+        </div>
     </div>
 
     @if(count($invoices) > 0)

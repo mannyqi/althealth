@@ -240,14 +240,16 @@ class InvoicesController extends Controller
             $this->store($request);
 
             // send email
-            // TODO set verification_code in global config
             $data = [
                 'invoice' => $data,
-                'verification_code' => 'TEOTW2020'
+                'verification_code' => config('custom.email_verification_code')
             ];
 
-            // TODO use email from global config
-            Mail::to('emmanuel.minnaar@gmail.com')->send(new InvoiceEmail($data));
+            $admin_email = config('custom.admin_email');
+            $client_email = ($data['invoice']['client']->C_Email == '')
+                            ? $admin_email
+                            : $data['invoice']['client']->C_Email;
+            Mail::bcc($admin_email)->to($client_email)->send(new InvoiceEmail($data));
 
             // discard draft invoice
             $request->session()->flush();

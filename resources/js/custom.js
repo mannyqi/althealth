@@ -10,6 +10,13 @@ $(function () {
         altApp.error = [];
         $('#error-messages').hide();
 
+        if ($('#name').val() == '') {
+            altApp.error.push('Please enter a name');
+        }
+        if ($('#surname').val() == '') {
+            altApp.error.push('Please select a surname');
+        }
+
         if (altApp.validateID($('#idnum').val()) == false) {
             altApp.error.push('Invalid South African ID number');
         }
@@ -410,7 +417,7 @@ $(function () {
         } else {
             var msg = confirm("Are you sure you want to issue this invoice?\n\nNote that invoice will be saved to the database and emailed to client");
             if (msg == true) {
-                window.location.href = "{{ env('APP_URL') }}/invoices/issue";
+                window.location.href = altApp.app_url + "/invoices/issue";
             } else {
                 return false;
             }
@@ -420,7 +427,7 @@ $(function () {
     altApp.discardInvoice = function() {
         var msg = confirm("Are you sure you want to discard this draft invoice?");
         if (msg == true) {
-            window.location.href = "{{ env('APP_URL') }}/invoices/discard-draft";
+            window.location.href = altApp.app_url + "/invoices/discard-draft";
         } else {
             return false;
         }
@@ -449,7 +456,10 @@ $(function () {
         return false;
     };
 
-    altApp.validatePhone = function (phone) {
+    altApp.validatePhone = function (phone, required) {
+        if (required && phone == '') {
+            return false;
+        }
         if (phone.length == 18) {
             if (
                 phone.charAt(0) == '(' &&

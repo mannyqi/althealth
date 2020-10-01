@@ -49,7 +49,7 @@ class ReportsController extends Controller
     }
 
     /**
-     * Day-2-day report - Client birthdays for current day
+     * Day-2-day report - Insufficient stock
      *
      * @return \Illuminate\Http\Response
      */

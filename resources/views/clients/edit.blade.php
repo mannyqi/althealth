@@ -11,16 +11,16 @@
     {!! Form::open(['action' => ['ClientsController@update', $c->Client_id], 'method' => 'POST']) !!}
         <div class="form-row">
             <div class="form-group col-md-6">
-                {{Form::label('name', 'Name')}}
+                {{Form::label('name', 'Name')}} <span class="text-danger">*</span>
                 {{Form::text('name', $c->C_name, ['class' => 'form-control'])}}
             </div>
             <div class="form-group col-md-6">
-                {{Form::label('surname')}}
+                {{Form::label('surname')}} <span class="text-danger">*</span>
                 {{Form::text('surname', $c->C_surname, ['class' => 'form-control'])}}
             </div>
         </div>
         <div class="form-group">
-            {{Form::label('idnum', 'ID Number')}}
+            {{Form::label('idnum', 'ID Number')}} <span class="text-danger">*</span>
             {{Form::text('idnum', $c->Client_id, ['class' => 'form-control'])}}
         </div>
         <div class="form-group">
@@ -32,20 +32,20 @@
             {{Form::text('zip', $c->Code, ['class' => 'form-control'])}}
         </div>
         <div class="form-group">
-            {{Form::label('email', 'Email')}}
+            {{Form::label('email', 'Email')}} <span class="text-danger">*</span>
             {{Form::email('email', $c->C_Email, ['class' => 'form-control'])}}
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                {{Form::label('telh', 'Telephone (Home)')}}
+                {{Form::label('telh', 'Telephone (Home)')}} <span class="text-danger">*</span>
                 {{Form::text('telh', $c->C_Tel_H, ['class' => 'form-control', 'placeholder' => 'e.g. (011)-(123)-(4567)'])}}
             </div>
             <div class="form-group col-md-4">
-                {{Form::label('telw', 'Telephone (Work)')}}
+                {{Form::label('telw', 'Telephone (Work)')}} <span class="text-danger">*</span>
                 {{Form::text('telw', $c->C_Tel_W, ['class' => 'form-control', 'placeholder' => 'e.g. (011)-(123)-(4567)'])}}
             </div>
             <div class="form-group col-md-4">
-                {{Form::label('cell', 'Cell')}}
+                {{Form::label('cell', 'Cell')}} <span class="text-danger">*</span>
                 {{Form::text('cell', $c->C_Tel_Cell, ['class' => 'form-control', 'placeholder' => 'e.g. (011)-(123)-(4567)'])}}
             </div>
         </div>
@@ -56,11 +56,11 @@
                 $ref[$reference->Reference_ID] = $reference->Description;
             }
             ?>
-            {{Form::label('reference', 'Reference')}}
+            {{Form::label('reference', 'Reference')}} <span class="text-danger">*</span>
             {{Form::select('reference', $ref, $c->Reference_ID, ['class' => 'form-control'])}}
         </div>
         {{Form::hidden('_method', 'PUT')}}
-        {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}
+        {{Form::submit('Submit', ['class' => 'btn btn-primary client-form-btn'])}}
     {!! Form::close() !!}
     @endforeach
 

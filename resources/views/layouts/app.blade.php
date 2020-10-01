@@ -9,7 +9,8 @@
 
     <script type="text/javascript">
         altApp = {
-            tax_rate: "{{config('custom.tax_rate', 13)}}"
+            tax_rate: "{{config('custom.tax_rate', 13)}}",
+            app_url: "{{ env('APP_URL') }}"
         };
     </script>
     <script type="text/javascript" src="{{asset('js/app.js')}}"></script>

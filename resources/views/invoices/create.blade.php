@@ -11,12 +11,7 @@
         @endif
     </div>
 
-    <?php //Session::flush(); ?>
-
     @if(Session::get('invoice'))
-        <pre>
-        <?php //print_r(Session::get('invoice')); ?>
-        </pre>
         <?php $invoice = Session::get('invoice'); ?>
         {!! Form::open(['action' => 'InvoicesController@create', 'method' => 'POST']) !!}
             <div class="row">
@@ -36,9 +31,12 @@
                     <h2>FROM</h2>
                     <h4>{{config('app.name', 'AltHealth')}}</h4>
                     <p>
-                        <strong>Address:</strong> 22 Captain street, Cape Town, 8001<br />
-                        <strong>Email:</strong> accounts@althealth.co.za<br />
-                        <strong>Phone:</strong> 021 123 4567
+                        <strong>Address:</strong>
+                        <?php $address = config('custom.physical_address'); ?>
+                        {{$address['address']}}, {{$address['city']}}, {{$address['country']}}, {{$address['zip']}}
+                        <br />
+                        <strong>Email:</strong> {{config('custom.admin_email')}}<br />
+                        <strong>Phone:</strong> {{config('custom.admin_tel')}}
                     </p>
                 </div>
                 <div class="col-6">
@@ -64,7 +62,7 @@
                         </select>
                     </td>
                     <td class="item-description">n/a</td>
-                    <td><input type="input" value="0.00" disabled name="cost-excl-sum" class="form-control-sm"></td>
+                    <td><input type="input" value="0.00" disabled name="cost-excl" class="form-control-sm"></td>
                     <td><input type="input" value="1" class="form-control-sm line-item-qty"></td>
                     <td><input type="input" value="0.00" disabled name="cost-excl-sum" class="form-control-sm"></td>
                     <td><strong class="item-subtotal">0.00</strong></td>

@@ -59,9 +59,11 @@
                             <td width="50%" valign="top"><h3>FROM:</h3></td>
                             <td align="left">
                                 <h4>{{config('app.name', 'AltHealth')}}</h4>
-                                <strong>Address:</strong> 22 Captain street, Cape Town, 8001<br />
-                                <strong>Email:</strong> accounts@althealth.co.za<br />
-                                <strong>Phone:</strong> 021 123 4567
+                                <?php $address = config('custom.physical_address'); ?>
+                                {{$address['address']}}, {{$address['city']}}, {{$address['country']}}, {{$address['zip']}}
+                                <br />
+                                <strong>Email:</strong> {{config('custom.admin_email')}}<br />
+                                <strong>Phone:</strong> {{config('custom.admin_tel')}}
                             </td>
                         </tr>
                         <tr>
