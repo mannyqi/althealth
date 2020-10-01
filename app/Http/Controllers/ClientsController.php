@@ -160,6 +160,12 @@ class ClientsController extends Controller
         return redirect('/clients')->with('success', "Client '$id' was removed");
     }
 
+    /**
+     * Get client details by id
+     *
+     * @param $id
+     * @return mixed
+     */
     public function getClient($id)
     {
         $client = Client::find($id);

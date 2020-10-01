@@ -147,6 +147,7 @@ class SupplementsController extends Controller
 
     /**
      * Generate a new supplement ID
+     * 
      * @return string
      */
     private function _generateSupplementId()

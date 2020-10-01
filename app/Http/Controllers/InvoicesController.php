@@ -264,8 +264,6 @@ class InvoicesController extends Controller
     {
         $invoice = DB::select("select * from tblinv_info where Inv_Num = ?", [$id]);
 
-//        dd($invoice);
-
         return view('invoices.mark-paid')->with('invoice', $invoice);
     }
 
@@ -289,6 +287,7 @@ class InvoicesController extends Controller
 
     /**
      * Generate a new invoice number
+     *
      * @return string
      */
     private function _generateInvoiceNum()
@@ -298,7 +297,6 @@ class InvoicesController extends Controller
         foreach ($invoice as $row) {
             $inv_num = str_replace('INV', '', $row->Inv_Num);
             $new_inv_num = (int) $inv_num + 1;
-//            $new_inv_num = 'INV' . $new_inv_num;
         }
 
         if (strlen($inv_num) > strlen($new_inv_num)) {
