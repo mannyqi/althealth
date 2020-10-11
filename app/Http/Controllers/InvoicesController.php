@@ -120,8 +120,6 @@ class InvoicesController extends Controller
                                 on cl.Client_id = inv.Client_id
                                 where inv.Inv_Num = ?", [$id]);
 
-//        dd($invoice);
-
         return view('invoices.show')->with('invoice', $invoice);
     }
 
@@ -312,5 +310,27 @@ class InvoicesController extends Controller
         }
 
         return $new_inv_num;
+    }
+
+    /**
+     * Display the specified resource for printing purposes
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function print($id)
+    {
+        $invoice = DB::select("select inv.*, invi.Item_Price, invi.Item_Quantity, invi.Supplement_id, sup.Supplement_Description,
+                                cl.C_name, cl.C_surname, cl.Address, cl.Code, cl.C_Email, cl.C_Tel_W, cl.C_Tel_H, cl.C_Tel_Cell
+                                from tblinv_info inv
+                                inner join tblinv_items invi
+                                on invi.Inv_Num = inv.Inv_Num
+                                inner join tblsupplements sup
+                                on sup.Supplement_id = invi.Supplement_id
+                                inner join tblclientinfo cl
+                                on cl.Client_id = inv.Client_id
+                                where inv.Inv_Num = ?", [$id]);
+
+        return view('print.invoice')->with('invoice', $invoice);
     }
 }

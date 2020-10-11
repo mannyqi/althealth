@@ -15,83 +15,86 @@
 
             @if($cnt == 1)
             <div class="row">
-                <div class="col-sm-6"><a href="{{ env('APP_URL') }}/invoices" class="btn btn-secondary"><< Back</a></div>
+                <div class="col"><a href="{{ env('APP_URL') }}/invoices" class="btn btn-secondary"><< Back</a></div>
                 @if($inv->Inv_Paid == 'N')
-                    <div class="col-sm-6 text-right"><a href="{{ env('APP_URL') }}/invoices/pay/{{$inv->Inv_Num}}" class="btn btn-primary">Mark as Paid</a></div>
+                    <div class="col text-right"><a href="{{ env('APP_URL') }}/invoices/pay/{{$inv->Inv_Num}}" class="btn btn-primary">Mark as Paid</a></div>
                 @endif
+                <div class="col text-right"><a href="{{ env('APP_URL') }}/invoices/print/{{$inv->Inv_Num}}" class="btn btn-info" target="_blank">Print Invoice</a></div>
             </div>
-            <div class="row">
-                <div class="col-6">
-                    <img src="{{asset('images/logo.png')}}" style="max-width: 100px" class="img-fluid logo" alt="{{config('app.name', 'AltHealth')}}" />
-                </div>
-                <div class="col-6 text-right">
-                    <h1>INVOICE</h1>
-                    <p>
-                        <strong>Invoice #:</strong> {{$inv->Inv_Num}}<br />
-                        <strong>Date:</strong> {{$inv->Inv_Date}}<br />
-                        @if($inv->Inv_Paid == 'N')
-                            <strong>Due Date:</strong>
-                            Within 30 Days
+            <div id="print-area">
+                <div class="row">
+                    <div class="col-6">
+                        <img src="{{asset('images/logo.png')}}" style="max-width: 100px" class="img-fluid logo" alt="{{config('app.name', 'AltHealth')}}" />
+                    </div>
+                    <div class="col-6 text-right">
+                        <h1>INVOICE</h1>
+                        <p>
+                            <strong>Invoice #:</strong> {{$inv->Inv_Num}}<br />
+                            <strong>Date:</strong> {{$inv->Inv_Date}}<br />
+                            @if($inv->Inv_Paid == 'N')
+                                <strong>Due Date:</strong>
+                                Within 30 Days
+                            @else
+                                <strong>Date Received:</strong>
+                                {{$inv->Inv_Paid_Date}}
+                            @endif
+                        </p>
+                        @if($inv->Inv_Paid == 'Y')
+                            <h5 class="text-success"><i>[ PAID ]</i></h5>
                         @else
-                            <strong>Date Received:</strong>
-                            {{$inv->Inv_Paid_Date}}
+                            <h5 class="text-danger"><i>[ UNPAID ]</i></h5>
                         @endif
-                    </p>
-                    @if($inv->Inv_Paid == 'Y')
-                        <h5 class="text-success"><i>[ PAID ]</i></h5>
-                    @else
-                        <h5 class="text-danger"><i>[ UNPAID ]</i></h5>
-                    @endif
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <h2>FROM</h2>
-                    <h4>{{config('app.name', 'AltHealth')}}</h4>
-                    <p>
-                        <strong>Address:</strong> 22 Captain street, Cape Town, 8001<br />
-                        <strong>Email:</strong> accounts@althealth.co.za<br />
-                        <strong>Phone:</strong> 021 123 4567
-                    </p>
+                <div class="row">
+                    <div class="col-6">
+                        <h2>FROM</h2>
+                        <h4>{{config('app.name', 'AltHealth')}}</h4>
+                        <p>
+                            <strong>Address:</strong> 22 Captain street, Cape Town, 8001<br />
+                            <strong>Email:</strong> accounts@althealth.co.za<br />
+                            <strong>Phone:</strong> 021 123 4567
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <h2>TO</h2>
+                        <h4>{{$inv->C_name}} {{$inv->C_surname}}</h4>
+                        <p>
+                            <strong>Address:</strong> {{$inv->Address}}, {{$inv->Code}}<br />
+                            <strong>Email:</strong> {{$inv->C_Email}}<br />
+                            <strong>Phone:</strong> {{$inv->C_Tel_W}}
+                        </p>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <h2>TO</h2>
-                    <h4>{{$inv->C_name}} {{$inv->C_surname}}</h4>
-                    <p>
-                        <strong>Address:</strong> {{$inv->Address}}, {{$inv->Code}}<br />
-                        <strong>Email:</strong> {{$inv->C_Email}}<br />
-                        <strong>Phone:</strong> {{$inv->C_Tel_W}}
-                    </p>
-                </div>
-            </div>
-            <hr />
-            <!-- ITEMS -->
-            <table class="table table-light">
-                <thead>
-                    <tr>
-                        <th>Supplement ID</th>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Unit Price (Excl.)</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-            @endif
+                <hr />
+                <!-- ITEMS -->
+                <table class="table table-light">
+                    <thead>
+                        <tr>
+                            <th>Supplement ID</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Unit Price (Excl.)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                @endif
 
-                    <tr>
-                        <td>{{$inv->Supplement_id}}</td>
-                        <td>{{$inv->Supplement_Description}}</td>
-                        <td>{{$inv->Item_Quantity}}</td>
-                        <td>R {{number_format($inv->Item_Price, 2, '.', ' ')}}</td>
-                        <td>R {{number_format($inv->Item_Price * $inv->Item_Quantity, 2, '.', ' ')}}</td>
-                    </tr>
+                        <tr>
+                            <td>{{$inv->Supplement_id}}</td>
+                            <td>{{$inv->Supplement_Description}}</td>
+                            <td>{{$inv->Item_Quantity}}</td>
+                            <td>R {{number_format($inv->Item_Price, 2, '.', ' ')}}</td>
+                            <td>R {{number_format($inv->Item_Price * $inv->Item_Quantity, 2, '.', ' ')}}</td>
+                        </tr>
 
-            @if($cnt == count($invoice))
-                </tbody>
-            @endif
+                @if($cnt == count($invoice))
+                    </tbody>
+                @endif
 
-            <?php $cnt++; ?>
+                <?php $cnt++; ?>
+            </div> <!-- #print-area -->
         @endforeach
                 <tfoot>
                     <tr>

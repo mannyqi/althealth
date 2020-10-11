@@ -30,6 +30,7 @@ Route::post('/invoices/confirm-payment', 'InvoicesController@confirmPayment');
 Route::get('/invoices/discard-draft', 'InvoicesController@discardDraft');
 Route::get('/invoices/issue', 'InvoicesController@issueInvoice');
 Route::get('/invoices/pay/{id}', 'InvoicesController@markPaid');
+Route::get('/invoices/print/{id}', 'InvoicesController@print');
 Route::resource('invoices', 'InvoicesController');
 
 Route::get('/reports', 'ReportsController@index');
