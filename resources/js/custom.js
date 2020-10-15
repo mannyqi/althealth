@@ -369,12 +369,32 @@ $(function () {
                     altApp.error.push('There was a problem saving your draft invoice. Please try again later.');
                     altApp.showError();
                 } else {
+                    altApp.toggleStockStatus(data);
                     //location.reload();
                 }
             }
         );
 
         altApp.toggleIssueBtn();
+    };
+
+    /**
+     * Check each line items quantity and show error for items with insuffiecient stock
+     * @param data
+     */
+    altApp.toggleStockStatus = function(data) {
+        for (var i = 0; i < data.length; i++) {
+            var sufficient_stock = data[i].sufficient_stock;
+            var supplement_id = data[i].supplement_id;
+
+            var supplement_select = $('.invoice-line-items .invoice-lineitem-supplement option[value="' + supplement_id + '"]:selected');
+            if (sufficient_stock == false && supplement_select.parents('tr').find('.line-item-qty-cell .invoice-line-item-error').length == 0) {
+                supplement_select.parents('tr').find('.line-item-qty-cell').append('<label class="text-danger invoice-line-item-error">Not enough stock</label>');
+            }
+            if (sufficient_stock == true) {
+                supplement_select.parents('tr').find('.line-item-qty-cell .invoice-line-item-error').remove();
+            }
+        }
     };
 
     altApp.deleteInvoice = function() {

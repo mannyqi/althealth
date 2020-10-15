@@ -209,11 +209,19 @@ class InvoicesController extends Controller
     public function saveDraft(Request $request)
     {
         $items = json_decode($request->input('items'));
+        for ($i = 0; $i < count($items); $i++) {
+            // Set each invoice line item with a flag to indicate if it has enough stock or not
+            if (!$this->_hasEnoughStock($items[$i]->supplement_id, $items[$i]->qty)) {
+                $items[$i]->sufficient_stock = false;
+            } else {
+                $items[$i]->sufficient_stock = true;
+            }
+        }
 
         try {
             $request->session()->put('invoice.items', $items);
 
-            return 'success';
+            return response()->json($items);
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -332,5 +340,13 @@ class InvoicesController extends Controller
                                 where inv.Inv_Num = ?", [$id]);
 
         return view('print.invoice')->with('invoice', $invoice);
+    }
+
+    private function _hasEnoughStock($supplement_id, $qty)
+    {
+        $result = DB::select("select * from tblsupplements
+                                where Supplement_id = ? and Current_stock_levels >= ?", [$supplement_id, $qty]);
+
+        return count($result);
     }
 }

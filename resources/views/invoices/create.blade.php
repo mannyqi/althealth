@@ -63,7 +63,7 @@
                     </td>
                     <td class="item-description">n/a</td>
                     <td><input type="input" value="0.00" disabled name="cost-excl" class="form-control-sm"></td>
-                    <td><input type="input" value="1" class="form-control-sm line-item-qty"></td>
+                    <td class="line-item-qty-cell"><input type="input" value="1" class="form-control-sm line-item-qty"></td>
                     <td><input type="input" value="0.00" disabled name="cost-excl-sum" class="form-control-sm"></td>
                     <td><strong class="item-subtotal">0.00</strong></td>
                     <td><a href="javascript:;" class="btn btn-sm btn-danger line-item-delete">X</a></td>
@@ -94,7 +94,12 @@
                             </td>
                             <td class="item-description">n/a</td>
                             <td><input type="input" value="0.00" disabled name="cost-excl" class="form-control-sm"></td>
-                            <td><input type="input" value="{{$item->qty}}" class="form-control-sm line-item-qty"></td>
+                            <td class="line-item-qty-cell">
+                                <input type="input" value="{{$item->qty}}" class="form-control-sm line-item-qty">
+                                @if ($item->sufficient_stock == false)
+                                    <label class="text-danger invoice-line-item-error">Not enough stock</label>
+                                @endif
+                            </td>
                             <td><input type="input" value="0.00" disabled name="cost-excl-sum" class="form-control-sm"></td>
                             <td><strong class="item-subtotal">0.00</strong></td>
                             <td><a href="javascript:;" class="btn btn-sm btn-danger line-item-delete">X</a></td>
