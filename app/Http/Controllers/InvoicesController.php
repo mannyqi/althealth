@@ -21,7 +21,7 @@ class InvoicesController extends Controller
     public function index()
     {
         // Production
-        $invoices = Invoice::orderBy('Inv_Date', 'desc')->paginate(20);
+        $invoices = Invoice::orderBy(DB::raw('CONVERT(REPLACE(`Inv_Num`, \'INV\', \'\'), INT)'), 'desc')->paginate(20);
 
         // Production
 //        $invoices = DB::select("select inv.*, cl.C_name, cl.C_surname
@@ -64,20 +64,6 @@ class InvoicesController extends Controller
             $invoice = $request->session()->get('invoice');
             $client = $invoice['client'];
             $items = $invoice['items'];
-
-            // TODO check if there is available stock and show notice to admin after creating invoice about low stock
-
-//            $this->validate($request, [
-//                'name' => 'required',
-//                'surname' => 'required',
-//                'idnum' => 'required'
-//                //            'address'   => 'required',
-//                //            'email'     => 'required',
-//                //            'telh'      => 'required',
-//                //            'telw'      => 'required',
-//                //            'cell'      => 'required',
-//                //            'reference' => 'required'
-//            ]);
 
             // Create Invoice
             $inv = new Invoice;
@@ -149,12 +135,6 @@ class InvoicesController extends Controller
             'name'      => 'required',
             'surname'   => 'required',
             'idnum'     => 'required'
-//            'address'   => 'required',
-//            'email'     => 'required',
-//            'telh'      => 'required',
-//            'telw'      => 'required',
-//            'cell'      => 'required',
-//            'reference' => 'required'
         ]);
 
         // Create Invoices

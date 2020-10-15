@@ -31,8 +31,6 @@
                     <td>{{$invoice->Inv_Date}}</td>
                     <td>{{$invoice->Inv_Paid_Date}}</td>
                     <td class="text-right">
-{{--                        <a href="{{ env('APP_URL') }}/invoices/{{$invoice->Inv_Num}}/edit" class="btn btn-sm btn-primary">Edit</a> &nbsp;--}}
-
                         {!! Form::open(['action' => ['InvoicesController@destroy', $invoice->Inv_Num], 'method' => 'POST', 'class' => 'float-right', 'onsubmit' => 'return altApp.deleteInvoice()']) !!}
                             {{Form::hidden('_method', 'DELETE')}}
                             {{Form::submit('Delete', ['class' => 'btn btn-danger btn-sm'])}}
