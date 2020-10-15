@@ -21,7 +21,7 @@ class InvoicesController extends Controller
     public function index()
     {
         // Production
-        $invoices = Invoice::orderBy('Inv_Num', 'desc')->paginate(20);
+        $invoices = Invoice::orderBy('Inv_Date', 'desc')->paginate(20);
 
         // Production
 //        $invoices = DB::select("select inv.*, cl.C_name, cl.C_surname

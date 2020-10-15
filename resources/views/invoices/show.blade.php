@@ -14,12 +14,16 @@
             ?>
 
             @if($cnt == 1)
+                <?php $comments = $inv->Comments; ?>
             <div class="row">
                 <div class="col"><a href="{{ env('APP_URL') }}/invoices" class="btn btn-secondary"><< Back</a></div>
-                @if($inv->Inv_Paid == 'N')
-                    <div class="col text-right"><a href="{{ env('APP_URL') }}/invoices/pay/{{$inv->Inv_Num}}" class="btn btn-primary">Mark as Paid</a></div>
-                @endif
-                <div class="col text-right"><a href="{{ env('APP_URL') }}/invoices/print/{{$inv->Inv_Num}}" class="btn btn-info" target="_blank">Print Invoice</a></div>
+
+                <div class="col text-right">
+                    @if($inv->Inv_Paid == 'N')
+                        <a href="{{ env('APP_URL') }}/invoices/pay/{{$inv->Inv_Num}}" class="btn btn-primary">Mark as Paid</a>
+                    @endif
+                    <a href="{{ env('APP_URL') }}/invoices/print/{{$inv->Inv_Num}}" class="btn btn-dark" target="_blank">Print Invoice</a>
+                </div>
             </div>
             <div id="print-area">
                 <div class="row">
@@ -96,22 +100,33 @@
                 <?php $cnt++; ?>
             </div> <!-- #print-area -->
         @endforeach
-                <tfoot>
-                    <tr>
-                        <td colspan="4" class="text-right"><h5>Subtotal:</h5></td>
-                        <td><strong>R {{number_format($total, 2, '.', ' ')}}</strong></td>
-                    </tr>
-                    <tr>
-                        <?php $tax = ($total * (1 + $tax_rate)) - $total; ?>
-                        <td colspan="4" class="text-right"><h5>VAT (15%):</h5></td>
-                        <td><strong>R {{number_format($tax, 2, '.', ' ')}}</strong></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" class="text-right text-info"><h4>Total Due (Incl.):</h4></td>
-                        <td><strong class="text-info">R {{number_format($total * (1 + $tax_rate), 2, '.', ' ')}}</strong></td>
-                    </tr>
-                </tfoot>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-right"><h5>Subtotal:</h5></td>
+                    <td><strong>R {{number_format($total, 2, '.', ' ')}}</strong></td>
+                </tr>
+                <tr>
+                    <?php $tax = ($total * (1 + $tax_rate)) - $total; ?>
+                    <td colspan="4" class="text-right"><h5>VAT (15%):</h5></td>
+                    <td><strong>R {{number_format($tax, 2, '.', ' ')}}</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right text-info"><h4>Total Due (Incl.):</h4></td>
+                    <td><strong class="text-info">R {{number_format($total * (1 + $tax_rate), 2, '.', ' ')}}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <?php if (isset($comments) && $comments != "") { ?>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                    <td style="padding: 20px; min-height: 100px; background: #ededed">
+                        <h3 style="margin-bottom: 5px;">Comments:</h3>
+                        {{$comments}}
+                    </td>
+                </tr>
             </table>
+        <?php } ?>
     </div>
 
 @endsection

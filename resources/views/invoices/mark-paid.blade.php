@@ -17,7 +17,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group col">
-                    {{Form::label('date_paid', 'Date Paid ( YYYY-MM-DD )')}}
+                    {{Form::label('date_paid', 'Date Paid ( YYYY-MM-DD )', ['style' => 'display:block'])}}
                     {{Form::text('date_paid', date('Y-m-d'), ['class' => 'form-control'])}}
                 </div>
             </div>

@@ -433,6 +433,17 @@ $(function () {
         }
     };
 
+    $('#date_paid').datetextentry({
+        show_tooltips : false,
+        separator :'-',
+        show_hints:true,
+        field_width_day   : 2,
+        field_width_month : 2,
+        field_width_year  : 4,
+        // errorbox_x    : -135,
+        // errorbox_y    : 28,
+    });
+
     // ----------------------------------------------------------------------------
     // GLOBAL
     // ----------------------------------------------------------------------------
