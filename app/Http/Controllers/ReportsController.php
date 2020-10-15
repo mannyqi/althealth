@@ -72,23 +72,47 @@ class ReportsController extends Controller
     /**
      * MIS report 1 - Top 10 clients within a period of time
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function mis1()
+    public function mis1(Request $request)
     {
+        $from_date = ($request->input('from_date'))
+                        ? $request->input('from_date')
+                        : 2012;
+        $to_date = ($request->input('to_date'))
+                        ? $request->input('to_date')
+                        : date('Y');
+
+        if ($to_date < $from_date) {
+            // To date cannot be before the from date
+            return redirect('/reports/mis-1')->with('error', "'To' date cannot be less than the 'From' date!");
+        }
+
+        if ($to_date > date('Y')) {
+            // To date cannot exceed current year
+            return redirect('/reports/mis-1')->with('error', "'To' date cannot exceed current year!");
+        }
+
         // Original
         $reports = DB::select("SELECT
                                     CONCAT(inv.Client_id, ' ', cl.C_name, ' ', cl.C_surname) AS 'CLIENT',
                                     COUNT(inv.Client_id) AS 'FREQUENCY'
                                 FROM tblclientinfo cl
                                 INNER JOIN tblinv_info inv ON inv.Client_id = cl.Client_id
-                                WHERE YEAR(inv.Inv_Date) >= 2018 AND YEAR(inv.Inv_Date) <= 2019
+                                WHERE YEAR(inv.Inv_Date) >= $from_date AND YEAR(inv.Inv_Date) <= $to_date
                                 GROUP BY 1
                                 ORDER BY 2 desc
                                 LIMIT 10
                                 ");
 
-        return view('reports.mis-1')->with('reports', $reports);
+        $data = [
+            'report' => $reports,
+            'from_date' => $from_date,
+            'to_date' => $to_date
+        ];
+
+        return view('reports.mis-1')->with('data', $data);
     }
 
     /**
