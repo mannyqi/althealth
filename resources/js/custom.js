@@ -142,8 +142,11 @@ $(function () {
         if ($('#supplier').val() == '') {
             altApp.error.push('Please select a supplier');
         }
-        if ($('input[name="costexcl"]').val() == '') {
-            altApp.error.push('Please enter the supplement cost');
+        if (
+            $('input[name="costexcl"]').val() == '' ||
+            isNaN($('input[name="costexcl"]').val())
+        ) {
+            altApp.error.push('Please enter a valid supplement cost');
         }
         if (
             $('input[name="rate"]').val() == '' ||

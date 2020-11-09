@@ -23,13 +23,6 @@ class InvoicesController extends Controller
         // Production
         $invoices = Invoice::orderBy(DB::raw('CONVERT(REPLACE(`Inv_Num`, \'INV\', \'\'), INT)'), 'desc')->paginate(20);
 
-        // Production
-//        $invoices = DB::select("select inv.*, cl.C_name, cl.C_surname
-//                                from tblinv_info inv
-//                                inner join tblclientinfo cl
-//                                on cl.Client_id = inv.Client_id
-//                                order by inv.Inv_Num desc limit 10 offset 0");
-
         return view('invoices.index')->with('invoices', $invoices);
     }
 
@@ -248,7 +241,7 @@ class InvoicesController extends Controller
 
     public function markPaid($id)
     {
-        $invoice = DB::select("select * from tblinv_info where Inv_Num = ?", [$id]);
+        $invoice = DB::select("SELECT inv.*, (select sum(Item_Price*Item_Quantity) from tblinv_items ii where ii.Inv_Num = inv.Inv_Num) as total FROM tblinv_info inv where Inv_Num = ?", [$id]);
 
         return view('invoices.mark-paid')->with('invoice', $invoice);
     }

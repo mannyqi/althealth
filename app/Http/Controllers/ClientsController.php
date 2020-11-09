@@ -56,6 +56,12 @@ class ClientsController extends Controller
             'reference' => 'required'
         ]);
 
+        // Check for duplicate ID number
+        $result = DB::select("select * from tblclientinfo where Client_id = ?", [$request->input('idnum')]);
+        if (count($result)) {
+            return redirect('/clients/create')->with('error', 'Client with ID number ' . $request->input('idnum') . ' already exists!');
+        }
+
         // Create Client
         $client = new Client;
         $client->C_name         = $request->input('name');
@@ -128,6 +134,12 @@ class ClientsController extends Controller
             'cell'      => 'required',
             'reference' => 'required'
         ]);
+
+        // Check for duplicate ID number
+        $result = DB::select("select * from tblclientinfo where Client_id = ? and Client_id <> ?", [$request->input('idnum'), $id]);
+        if (count($result)) {
+            return redirect('/clients/' . $id . '/edit')->with('error', 'Client with ID number ' . $request->input('idnum') . ' already exists!');
+        }
 
         // Create Client
         $client = Client::find($id);
