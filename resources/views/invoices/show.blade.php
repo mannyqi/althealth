@@ -34,13 +34,13 @@
                         <h1>INVOICE</h1>
                         <p>
                             <strong>Invoice #:</strong> {{$inv->Inv_Num}}<br />
-                            <strong>Date:</strong> {{$inv->Inv_Date}}<br />
+                            <strong>Date:</strong> {{date('d-m-Y', strtotime($inv->Inv_Date))}}<br />
                             @if($inv->Inv_Paid == 'N')
                                 <strong>Due Date:</strong>
                                 Within 30 Days
                             @else
                                 <strong>Date Received:</strong>
-                                {{$inv->Inv_Paid_Date}}
+                                {{date('d-m-Y', strtotime($inv->Inv_Paid_Date))}}
                             @endif
                         </p>
                         @if($inv->Inv_Paid == 'Y')

@@ -58,10 +58,10 @@ if (count($invoice) > 0) {
                             <tr>
                                 <td class="invoice-number" valign="top"><strong>Invoice Number:</strong> {{$invoice_data->Inv_Num}}</td>
                                 <td class="invoice-date">
-                                    <strong>Date:</strong> {{$invoice_data->Inv_Date}}
+                                    <strong>Date:</strong> {{date('d-m-Y', strtotime($invoice_data->Inv_Date))}}
                                     @if($invoice_data->Inv_Paid == 'Y')
                                         <br>
-                                        <strong>Date Received:</strong> {{$invoice_data->Inv_Paid_Date}}
+                                        <strong>Date Received:</strong> {{date('d-m-Y', strtotime($invoice_data->Inv_Paid_Date))}}
                                     @else
                                         <strong>[ Unpaid ]</strong>
                                     @endif

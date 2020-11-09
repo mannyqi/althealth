@@ -28,8 +28,14 @@
                 <tr>
                     <td><a href="{{ env('APP_URL') }}/invoices/{{$invoice->Inv_Num}}" title="View invoice info">{{$invoice->Inv_Num}}</a></td>
                     <td>{{$invoice->C_name}} {{$invoice->C_surname}}</td>
-                    <td>{{$invoice->Inv_Date}}</td>
-                    <td>{{$invoice->Inv_Paid_Date}}</td>
+                    <td>{{date('d-m-Y', strtotime($invoice->Inv_Date))}}</td>
+                    <td>
+                        @if($invoice->Inv_Paid_Date)
+                            <span @if(date('Y', strtotime($invoice->Inv_Paid_Date)) < 1000)class="text-danger"@endif>
+                                {{date('d-m-Y', strtotime($invoice->Inv_Paid_Date))}}
+                            </span>
+                        @endif
+                    </td>
                     <td class="text-right">
                         {!! Form::open(['action' => ['InvoicesController@destroy', $invoice->Inv_Num], 'method' => 'POST', 'class' => 'float-right', 'onsubmit' => 'return altApp.deleteInvoice()']) !!}
                             {{Form::hidden('_method', 'DELETE')}}

@@ -460,6 +460,7 @@ $(function () {
         field_width_day   : 2,
         field_width_month : 2,
         field_width_year  : 4,
+        field_order: 'DMY',
         // errorbox_x    : -135,
         // errorbox_y    : 28,
     });

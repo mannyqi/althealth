@@ -29,7 +29,7 @@ class InvoiceEmail extends Mailable
     public function build()
     {
         return $this
-            ->from('mi.hao.wei@gmail.com', 'AltHealth')
+            ->from(config('custom.admin_email'), env('APP_NAME', 'AltHealth'))
             ->subject('Invoice ' . $this->invoice_details['invoice']['invoice_id'])
             ->view('mail.invoice-email', ['data' => $this->invoice_details]);
     }
