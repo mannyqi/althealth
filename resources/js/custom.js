@@ -46,6 +46,12 @@ $(function () {
             altApp.showError();
         }
     };
+    /**
+     * Code snippet from https://www.codegrepper.com/code-examples/csharp/south+african+id+number+example
+     *
+     * @param idNumber
+     * @returns {boolean}
+     */
     altApp.validateID = function (idNumber) {
         // Ref: http://www.sadev.co.za/content/what-south-african-id-number-made
         // SA ID Number have to be 13 digits
